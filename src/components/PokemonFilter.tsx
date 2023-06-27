@@ -12,29 +12,10 @@ interface PokemonFilterProps {
     setFilteredPokemonList: React.Dispatch<React.SetStateAction<PokemonType[]>>;
     filter: string;
     setFilter: React.Dispatch<React.SetStateAction<string>>;
+    filterList: string[]
 }
 
-const pokemonTypes: string[] = [
-    'fire',
-    'water',
-    'electric',
-    'grass',
-    'ice',
-    'fighting',
-    'poison',
-    'ground',
-    'flying',
-    'psychic',
-    'bug',
-    'rock',
-    'ghost',
-    'dragon',
-    'dark',
-    'steel',
-    'fairy',
-];
-
-const PokemonFilter: React.FC<PokemonFilterProps> = ({ setFilteredPokemonList, filter, setFilter }) => {
+const PokemonFilter: React.FC<PokemonFilterProps> = ({ setFilteredPokemonList, filter, setFilter, filterList }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const handleClearFilter = async() => {
@@ -81,7 +62,7 @@ const PokemonFilter: React.FC<PokemonFilterProps> = ({ setFilteredPokemonList, f
                     </div>
                     {isDropdownOpen && (
                         <div className="absolute top-0 left-24 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto">
-                            {pokemonTypes.map((type) => (
+                            {filterList.map((type) => (
                                 <div
                                     key={type}
                                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
@@ -96,10 +77,10 @@ const PokemonFilter: React.FC<PokemonFilterProps> = ({ setFilteredPokemonList, f
             </div>
             {filter && (
                     <button
-                        className="flex items-center space-x-2 text-gray-500 hover:text-gray-700 focus:outline-none w-40 md:w-70"
+                        className="flex items-center gap-1 text-gray-500 hover:text-gray-700 focus:outline-none w-fit flex-nowrap"
                         onClick={handleClearFilter}
                     >
-                        <span>Clear Filter</span>
+                        <span className="whitespace-nowrap">Clear Filter</span>
                         <XMarkIcon className="w-4 h-4" />
                     </button>
             )}

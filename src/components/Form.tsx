@@ -9,6 +9,26 @@ interface FormProps {
     submitForm: (data: FormData) => void;
 }
 
+const pokemonTypes: string[] = [
+    'fire',
+    'water',
+    'electric',
+    'grass',
+    'ice',
+    'fighting',
+    'poison',
+    'ground',
+    'flying',
+    'psychic',
+    'bug',
+    'rock',
+    'ghost',
+    'dragon',
+    'dark',
+    'steel',
+    'fairy',
+];
+
 const Form: React.FC<FormProps> = ({ submitForm }) => {
     const [nameTooltipVisible, setNameTooltipVisible] = useState(false);
     const [surnameTooltipVisible, setSurnameTooltipVisible] = useState(false);
@@ -42,7 +62,7 @@ const Form: React.FC<FormProps> = ({ submitForm }) => {
                     setTooltipVisible={setSurnameTooltipVisible}
                 />
 
-                <PokemonSelect />
+                <PokemonSelect filterList={pokemonTypes}  />
 
                 <button
                     type="submit"

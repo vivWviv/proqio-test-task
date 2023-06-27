@@ -15,10 +15,18 @@ import {
     InformationCircleIcon,
 } from '@heroicons/react/24/solid';
 
-export const POKEMON_LIMIT = 10;
+export const POKEMON_LIMIT = 20;
 const BASE_SPRITE_LINK ="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/"
 
-const PokemonSelect: React.FC = () => {
+export interface PokemonSelectProps {
+    label?: string;
+    labelInfo?: string;
+    filterList?: string[];
+    placeholder?: string;
+    dropDownHeight?: string;
+}
+
+const PokemonSelect: React.FC<PokemonSelectProps> = ({filterList=[], dropDownHeight, label, labelInfo, placeholder}) => {
     const methods = useFormContext();
 
     const {
@@ -41,7 +49,7 @@ const PokemonSelect: React.FC = () => {
 
     useEffect(() => {
         setIsMaxSelected(selectedPokemon.length >= 4);
-        setValue('pokemon', selectedPokemon);
+        setValue(label||"pokemon", selectedPokemon);
     }, [selectedPokemon, setValue]);
 
     useEffect(() => {
@@ -122,7 +130,7 @@ const PokemonSelect: React.FC = () => {
             <select
                 className="absolute hidden"
                 multiple
-                {...methods.register('pokemon', {
+                {...methods.register(label||"pokemon", {
                     validate: (value) => value?.length === 4 || 'There must be 4 pokemon selected',
                 })}
             >
@@ -134,7 +142,7 @@ const PokemonSelect: React.FC = () => {
             </select>
 
             <div className="mb-2 flex items-center gap-1 relative">
-                Pokemon
+                {label || "Pokemon"}
                 <InformationCircleIcon
                     className="fill-gray-600 h-4 w-4 cursor-pointer"
                     onMouseEnter={() => setIsToolTipVisible(true)}
@@ -142,7 +150,7 @@ const PokemonSelect: React.FC = () => {
                 />
                 {isToolTipVisible && (
                     <div className="absolute p-2 bg-gray-100 text-gray-600 rounded mt-1 text-xs max-w-xs whitespace-pre-wrap top-[-45px]">
-                        {'You have to choose 4 pokemons'}
+                        {labelInfo || 'You have to choose 4 pokemons'}
                     </div>
                 )}
             </div>
@@ -168,7 +176,9 @@ const PokemonSelect: React.FC = () => {
                             ))}
                         </div>
                     ) : (
-                        'Select a Pokemon'
+                        <>
+                        {placeholder || 'Select a Pokemon'}
+                        </>
                     )}
                     <div className="flex items-center gap-1.5 p-1">
                         <div className="h-4 w-4">
@@ -183,12 +193,14 @@ const PokemonSelect: React.FC = () => {
 
             {isDropdownVisible && (
                 <div ref={dropdownRef} className="mt-2 p-2 absolute z-10 bg-white w-full border border-gray-300 rounded-md shadow-lg">
+                    {filterList.length > 0 &&
                     <div>
-                        <PokemonFilter setFilteredPokemonList={setFilteredPokemonList} filter={filter} setFilter={setFilter}/>
+                        <PokemonFilter setFilteredPokemonList={setFilteredPokemonList} filter={filter} setFilter={setFilter} filterList={filterList}/>
                     </div>
+                    }
                     <InfiniteScroll
                         isLoading={isLoading}
-                        height={filteredPokemonList.length < 5 ? 'fit-content' : 'calc(100vh - 580px)'}
+                        height={dropDownHeight || (filteredPokemonList.length < 5 ? 'fit-content' : 'calc(100vh - 580px)')}
                         hasMore={hasMore}
                         next={handleNext}
                     >
