@@ -35,7 +35,7 @@ const Form: React.FC = () => {
 
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 mt-3 rounded hover:bg-blue-600 transition-colors duration-300"
+                    className="bg-blue-500 text-white py-2 px-4 mx-auto mt-3 rounded hover:bg-blue-600 transition-colors duration-300 w-16 flex items-center justify-center md:w-32 md:text-lg focus:outline-blue-700"
                 >
                     Submit
                 </button>

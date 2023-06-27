@@ -20,4 +20,20 @@ export const POKEMON_API = {
         } catch (error: any) {
             console.log(error.message)
         }
+    },
+    async getPokemonInfo(pokemonName: string) {
+        try {
+            const { data } = await api.get(`/pokemon/${pokemonName}`);
+            return data;
+        } catch (error: any) {
+            console.log(error.message)
+        }
+    },
+    async getPokemonsByType(type: string) {
+        try {
+            const { data } = await api.get(`/type/${type}`);
+            return data.pokemon;
+        } catch (error: any) {
+            console.log(error.message)
+        }
     }}

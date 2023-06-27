@@ -1,22 +1,21 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 import InfiniteScroll from './InfiniteScroll';
+
+import { firstLetterCapitalize } from '../helpers/string';
+import {POKEMON_API} from "../api/api";
+import PokemonSprite from "./PokemonSprite";
+import {PokemonInfoType, PokemonType} from "../types/types";
+import PokemonFilter from "./PokemonFilter";
 
 import {
     XMarkIcon,
     ChevronDownIcon,
-    InformationCircleIcon
+    InformationCircleIcon,
 } from '@heroicons/react/24/solid';
-import { firstLetterCapitalize } from '../helpers/string';
-import { useFormContext } from 'react-hook-form';
-import {POKEMON_API} from "../api/api";
 
-interface Pokemon {
-    name: string;
-    url: string;
-}
-
-const POKEMON_LIMIT = 10;
+export const POKEMON_LIMIT = 10;
 
 const PokemonSelect: React.FC = () => {
     const methods = useFormContext();
@@ -26,66 +25,68 @@ const PokemonSelect: React.FC = () => {
         setValue,
     } = methods;
 
-    const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
-    const [filteredPokemonList, setFilteredPokemonList] = useState<Pokemon[]>([]);
-    const [selectedPokemon, setSelectedPokemon] = useState<Pokemon[]>([]);
+    const [pokemonList, setPokemonList] = useState<PokemonType[]>([]);
+    const [filteredPokemonList, setFilteredPokemonList] = useState<PokemonType[]>([]);
+    const [selectedPokemon, setSelectedPokemon] = useState<PokemonType[]>([]);
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [isMaxSelected, setIsMaxSelected] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [isToolTipVisible, setIsToolTipVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedPokemonSprite, setSelectedPokemonSprite] = useState("");
+    const [filter, setFilter] = useState('');
 
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setIsMaxSelected(selectedPokemon.length >= 4);
-        setValue(
-            'pokemon',
-            selectedPokemon.map((pokemon) => pokemon.name)
-        );
+        setValue('pokemon', selectedPokemon);
     }, [selectedPokemon, setValue]);
 
     useEffect(() => {
-        const fetchPokemonList = async () => {
-                setIsLoading(true);
-
-                const results = await POKEMON_API.getPokemons(POKEMON_LIMIT);
-
-                setHasMore(results.length === POKEMON_LIMIT);
-                setPokemonList(results);
-                setFilteredPokemonList(results);
-                setIsLoading(false);
-        };
-
         fetchPokemonList();
     }, []);
 
     useEffect(() => {
-        setIsMaxSelected(selectedPokemon.length >= 4);
+        setIsMaxSelected(selectedPokemon?.length >= 4);
     }, [selectedPokemon]);
 
-    const handlePokemonSelect = (pokemon: Pokemon) => {
-        if (isMaxSelected) {
-            return;
+    const fetchPokemonList = async () => {
+        setIsLoading(true);
+
+        const res = await POKEMON_API.getPokemons(POKEMON_LIMIT);
+
+        setHasMore(res.length === POKEMON_LIMIT);
+        setPokemonList(res);
+        setFilteredPokemonList(res);
+        setIsLoading(false);
+    };
+
+    const handlePokemonSelect = async(pokemon: PokemonType) => {
+        if (isMaxSelected)  return;
+        const res:PokemonInfoType = await POKEMON_API.getPokemonInfo(pokemon.name);
+
+        const newPokemon = {
+            ...pokemon,
+            url:res.sprites.other.home.front_default
         }
 
-        setSelectedPokemon((prevSelectedPokemon) => [...prevSelectedPokemon, pokemon]);
+        setSelectedPokemon((prevSelectedPokemon) => [...prevSelectedPokemon, newPokemon]);
         setIsDropdownVisible(false);
     };
 
     const handleRemovePokemon = useCallback(
-        (pokemon: Pokemon) => {
+        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, pokemon: PokemonType) => {
             setSelectedPokemon((prevSelectedPokemon) =>
-                prevSelectedPokemon.filter((p) => p.name !== pokemon.name)
+                prevSelectedPokemon?.filter((p) => p.name !== pokemon.name)
             );
         },
         []
     );
 
     const handleInputClick = () => {
-        if (isMaxSelected) {
-            return;
-        }
+        if (isMaxSelected)  return;
+
         setIsDropdownVisible((prev) => !prev);
     };
 
@@ -93,11 +94,11 @@ const PokemonSelect: React.FC = () => {
             setIsLoading(true);
 
             const offset = pokemonList.length;
-            const results = await POKEMON_API.getPokemons(POKEMON_LIMIT, offset);
+            const res = await POKEMON_API.getPokemons(POKEMON_LIMIT, offset);
 
-            setHasMore(results.length === POKEMON_LIMIT);
-            setPokemonList((prevPokemonList) => [...prevPokemonList, ...results]);
-            setFilteredPokemonList((prevFilteredPokemonList) => [...prevFilteredPokemonList, ...results]);
+            setHasMore(res.length === POKEMON_LIMIT);
+            setPokemonList((prevPokemonList) => [...prevPokemonList, ...res]);
+            setFilteredPokemonList((prevFilteredPokemonList) => [...prevFilteredPokemonList, ...res]);
             setIsLoading(false);
     }, [pokemonList.length]);
 
@@ -108,23 +109,30 @@ const PokemonSelect: React.FC = () => {
         container.scrollLeft += scrollAmount;
     };
 
+    const onPokemonNameClick = async (e: React.MouseEvent<HTMLSpanElement, MouseEvent> ,pokemonName: string)=>{
+        e.stopPropagation();
+        const res:PokemonInfoType = await POKEMON_API.getPokemonInfo(pokemonName);
+        setSelectedPokemonSprite(res.sprites.other.home.front_default)
+    }
+
     return (
+        <>
         <div className="relative">
             <select
                 className="absolute hidden"
                 multiple
                 {...methods.register('pokemon', {
-                    validate: (value) => value.length === 4 || 'There must be 4 pokemon selected',
+                    validate: (value) => value?.length === 4 || 'There must be 4 pokemon selected',
                 })}
             >
-                {pokemonList.map((item) => (
+                {selectedPokemon.map((item) => (
                     <option key={item.name} value={item.name}>
                         {item.name}
                     </option>
                 ))}
             </select>
 
-            <p className="mb-2 flex items-center gap-1 relative">
+            <div className="mb-2 flex items-center gap-1 relative">
                 Pokemon
                 <InformationCircleIcon
                     className="fill-gray-600 h-4 w-4 cursor-pointer"
@@ -136,7 +144,7 @@ const PokemonSelect: React.FC = () => {
                         {'You have to choose 4 pokemons'}
                     </div>
                 )}
-            </p>
+            </div>
 
             <div>
                 <div
@@ -151,8 +159,8 @@ const PokemonSelect: React.FC = () => {
                                     key={pokemon.name}
                                     className="flex items-center space-x-1 text-sm text-black bg-gray-100 rounded-xl py-0.5 px-2.5"
                                 >
-                                    <span>{firstLetterCapitalize(pokemon.name)}</span>
-                                    <button onClick={() => handleRemovePokemon(pokemon)} className="text-gray-200 bold-svg">
+                                    <span  onClick={(e)=>onPokemonNameClick(e, pokemon.name)}>{firstLetterCapitalize(pokemon.name)}</span>
+                                    <button onClick={(e) => handleRemovePokemon(e, pokemon)} className="text-gray-200 bold-svg">
                                         <XMarkIcon className="h-4 w-4" />
                                     </button>
                                 </div>
@@ -173,10 +181,13 @@ const PokemonSelect: React.FC = () => {
             </div>
 
             {isDropdownVisible && (
-                <div ref={dropdownRef} className="mt-2 absolute z-10 bg-white w-full border border-gray-300 rounded-md shadow-lg">
+                <div ref={dropdownRef} className="mt-2 p-2 absolute z-10 bg-white w-full border border-gray-300 rounded-md shadow-lg">
+                    <div>
+                        <PokemonFilter setFilteredPokemonList={setFilteredPokemonList} filter={filter} setFilter={setFilter}/>
+                    </div>
                     <InfiniteScroll
                         isLoading={isLoading}
-                        height={filteredPokemonList.length < 5 ? 'fit-content' : 'calc(100vh - 500px)'}
+                        height={filteredPokemonList.length < 5 ? 'fit-content' : 'calc(100vh - 580px)'}
                         hasMore={hasMore}
                         next={handleNext}
                     >
@@ -204,6 +215,8 @@ const PokemonSelect: React.FC = () => {
                 {errors.pokemon ? `There must be 4 pokemon selected` : 'Pokemons is required'}
             </p>
         </div>
+    {selectedPokemonSprite && <PokemonSprite closeModal={()=>setSelectedPokemonSprite("")} image={selectedPokemonSprite}/>}
+    </>
     );
 };
 
