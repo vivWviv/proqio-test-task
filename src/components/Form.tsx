@@ -9,10 +9,7 @@ const Form: React.FC = () => {
     const [surnameTooltipVisible, setSurnameTooltipVisible] = useState(false);
 
     const methods = useForm();
-    const {
-        handleSubmit,
-        formState: { errors },
-    } = methods;
+    const { handleSubmit } = methods;
 
     const onSubmit = (data: any) => {
         console.log(data);
@@ -20,7 +17,7 @@ const Form: React.FC = () => {
 
     return (
         <FormProvider {...methods}>
-            <form className="max-w-md mx-auto mt-4" onSubmit={handleSubmit(onSubmit)}>
+            <form className="max-w-md mx-auto mt-4 flex flex-col" onSubmit={handleSubmit(onSubmit)}>
                 <InputField
                     label="Name"
                     name="name"
@@ -34,13 +31,11 @@ const Form: React.FC = () => {
                     setTooltipVisible={setSurnameTooltipVisible}
                 />
 
-                <div className="mt-4">
-                    <PokemonSelect />
-                </div>
+                <PokemonSelect />
 
                 <button
                     type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-300"
+                    className="bg-blue-500 text-white py-2 px-4 mt-3 rounded hover:bg-blue-600 transition-colors duration-300"
                 >
                     Submit
                 </button>

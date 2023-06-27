@@ -1,7 +1,7 @@
 import React from 'react';
-import { useFormContext } from "react-hook-form";
+import { useFormContext } from 'react-hook-form';
 
-import { InformationCircleIcon } from "@heroicons/react/24/solid";
+import { InformationCircleIcon } from '@heroicons/react/24/solid';
 
 interface InputFieldProps {
     label: string;
@@ -20,11 +20,12 @@ const InputField: React.FC<InputFieldProps> = ({
 
     const {
         formState: { errors },
+        register,
     } = methods;
 
     return (
         <div className="mb-4">
-            <label htmlFor={name} className="mb-2 flex items-center gap-1 relative">
+            <label className="mb-2 flex items-center gap-1 relative">
                 {label}
                 <InformationCircleIcon
                     className="fill-gray-600 h-4 w-4 cursor-pointer"
@@ -32,21 +33,18 @@ const InputField: React.FC<InputFieldProps> = ({
                     onMouseLeave={() => setTooltipVisible(false)}
                 />
                 {tooltipVisible && (
-                    <div
-                        className="absolute p-2 bg-gray-100 text-gray-600 rounded mt-1 text-xs max-w-xs whitespace-pre-wrap top-[-60px]"
-                    >
+                    <div className="absolute p-2 bg-gray-100 text-gray-600 rounded mt-1 text-xs max-w-xs whitespace-pre-wrap top-[-60px]">
                         {`${label} must be between 2 and 12 characters long. Only characters from a-z and A-Z are accepted.`}
                     </div>
                 )}
             </label>
             <input
                 type="text"
-                id={name}
                 placeholder={`Enter ${label}`}
-                className={`w-full p-2 border rounded-md focus:outline-none ${
+                className={`w-full p-2 border rounded-md focus:outline-none focus:border-blue-500 hover:border-blue-500 ${
                     errors[name] ? 'border-red-500' : 'border-gray-300'
                 }`}
-                {...methods.register(name, {
+                {...register(name, {
                     required: true,
                     minLength: 2,
                     maxLength: 12,
@@ -54,7 +52,7 @@ const InputField: React.FC<InputFieldProps> = ({
                 })}
             />
             <p className={`${errors[name] ? 'text-red-500' : 'text-gray-500'} text-sm mt-2`}>
-                {errors[name] ? `${label} must be between 2 and 12 characters long` : `${label} is required`}
+                {errors[name] ? `${label} must be 2 - 12 characters long` : `${label} is required`}
             </p>
         </div>
     );
