@@ -3,16 +3,27 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import InputField from './InputField';
 import PokemonSelect from './PokemonSelect';
+import {FormData} from "../types/types";
 
-const Form: React.FC = () => {
+interface FormProps {
+    submitForm: (data: FormData) => void;
+}
+
+const Form: React.FC<FormProps> = ({ submitForm }) => {
     const [nameTooltipVisible, setNameTooltipVisible] = useState(false);
     const [surnameTooltipVisible, setSurnameTooltipVisible] = useState(false);
 
-    const methods = useForm();
+    const methods = useForm<FormData>();
     const { handleSubmit } = methods;
 
-    const onSubmit = (data: any) => {
-        console.log(data);
+    const onSubmit = ({name, surname, pokemon}: FormData) => {
+        const updatedData = {
+            name: name.trim(),
+            surname: surname.trim(),
+            pokemon
+        };
+
+        submitForm(updatedData);
     };
 
     return (

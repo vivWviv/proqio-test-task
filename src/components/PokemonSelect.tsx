@@ -3,10 +3,10 @@ import { useFormContext } from 'react-hook-form';
 
 import InfiniteScroll from './InfiniteScroll';
 
-import { firstLetterCapitalize } from '../helpers/string';
+import {firstLetterCapitalize, getPokemonIdFromLink} from '../helpers/string';
 import {POKEMON_API} from "../api/api";
 import PokemonSprite from "./PokemonSprite";
-import {PokemonInfoType, PokemonType} from "../types/types";
+import {PokemonType} from "../types/types";
 import PokemonFilter from "./PokemonFilter";
 
 import {
@@ -16,6 +16,7 @@ import {
 } from '@heroicons/react/24/solid';
 
 export const POKEMON_LIMIT = 10;
+const BASE_SPRITE_LINK ="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/"
 
 const PokemonSelect: React.FC = () => {
     const methods = useFormContext();
@@ -64,11 +65,11 @@ const PokemonSelect: React.FC = () => {
 
     const handlePokemonSelect = async(pokemon: PokemonType) => {
         if (isMaxSelected)  return;
-        const res:PokemonInfoType = await POKEMON_API.getPokemonInfo(pokemon.name);
+        const id = getPokemonIdFromLink(pokemon.url);
 
         const newPokemon = {
             ...pokemon,
-            url:res.sprites.other.home.front_default
+            url:BASE_SPRITE_LINK+id+".png"
         }
 
         setSelectedPokemon((prevSelectedPokemon) => [...prevSelectedPokemon, newPokemon]);
@@ -109,10 +110,10 @@ const PokemonSelect: React.FC = () => {
         container.scrollLeft += scrollAmount;
     };
 
-    const onPokemonNameClick = async (e: React.MouseEvent<HTMLSpanElement, MouseEvent> ,pokemonName: string)=>{
+    const onPokemonNameClick = async (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, pokemon: PokemonType)=>{
         e.stopPropagation();
-        const res:PokemonInfoType = await POKEMON_API.getPokemonInfo(pokemonName);
-        setSelectedPokemonSprite(res.sprites.other.home.front_default)
+
+        setSelectedPokemonSprite(pokemon.url)
     }
 
     return (
@@ -159,7 +160,7 @@ const PokemonSelect: React.FC = () => {
                                     key={pokemon.name}
                                     className="flex items-center space-x-1 text-sm text-black bg-gray-100 rounded-xl py-0.5 px-2.5"
                                 >
-                                    <span  onClick={(e)=>onPokemonNameClick(e, pokemon.name)}>{firstLetterCapitalize(pokemon.name)}</span>
+                                    <span  onClick={(e)=>onPokemonNameClick(e, pokemon)}>{firstLetterCapitalize(pokemon.name)}</span>
                                     <button onClick={(e) => handleRemovePokemon(e, pokemon)} className="text-gray-200 bold-svg">
                                         <XMarkIcon className="h-4 w-4" />
                                     </button>
