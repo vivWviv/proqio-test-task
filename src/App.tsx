@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import FormContainer from './components/FormContainer';
-import { FormData } from './types/types';
-import { firstLetterCapitalize } from './helpers/string';
+import FormContainer from "./components/FormContainer";
+import { FormData } from "./types/types";
+import { firstLetterCapitalize } from "./helpers/string";
 
 function App() {
   const [openCreateTeamModal, setOpenCreateTeamModal] = useState(false);
@@ -21,14 +21,14 @@ function App() {
             submitData.name
           )} ${firstLetterCapitalize(submitData.surname)} team`}</div>
           <div className="flex space-x-2">
-            {submitData.pokemon.map(el => (
-              <div key={el.name} className="flex flex-col items-center">
+            {submitData.pokemon.map((el) => (
+              <div key={el.label} className="flex flex-col items-center">
                 <img
-                  src={el.url}
-                  alt={`${firstLetterCapitalize(el.name)} Sprite`}
+                  src={el.value as string}
+                  alt={`${firstLetterCapitalize(el.label)} Sprite`}
                   className="w-16 h-16 rounded-md"
                 />
-                <div className="text-sm">{firstLetterCapitalize(el.name)}</div>
+                <div className="text-sm">{firstLetterCapitalize(el.label)}</div>
               </div>
             ))}
           </div>

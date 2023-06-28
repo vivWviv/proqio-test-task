@@ -10,9 +10,9 @@ import {
 } from "../constants/constants";
 
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
-import { PokemonType } from "../types/types";
+import { OptionsType, PokemonType } from "../types/types";
 import { POKEMON_API } from "../api/api";
-import { getPokemonIdFromLink } from "../helpers/string";
+import { pokemonToOptionObj } from "../helpers/pokemonToOptionObj";
 
 const PokemonSelect = () => {
   const methods = useFormContext();
@@ -25,10 +25,11 @@ const PokemonSelect = () => {
   } = methods;
 
   const [isToolTipVisible, setIsToolTipVisible] = useState(false);
-  const [pokemonList, setPokemonList] = useState<PokemonType[]>([]);
+  const [pokemonList, setPokemonList] = useState<OptionsType[]>([]);
   const [selectedPokemonSprite, setSelectedPokemonSprite] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     fetchPokemonList();
@@ -36,23 +37,18 @@ const PokemonSelect = () => {
 
   const fetchPokemonList = async () => {
     setIsLoading(true);
+    setFilter("");
 
     const res: PokemonType[] = await POKEMON_API.getPokemons(POKEMON_LIMIT);
+    const optionsList = pokemonToOptionObj(res);
 
-    setHasMore(res.length === POKEMON_LIMIT);
-    setPokemonList(res);
+    setHasMore(optionsList.length === POKEMON_LIMIT);
+    setPokemonList(optionsList);
     setIsLoading(false);
   };
 
-  const handlePokemonSelect = async (pokemon: PokemonType) => {
-    const id = getPokemonIdFromLink(pokemon.url as string);
-
-    const newPokemon = {
-      ...pokemon,
-      imageUrl: BASE_SPRITE_LINK + id + ".png",
-    };
-
-    setValue("pokemon", [...(watch("pokemon") || []), newPokemon]);
+  const handlePokemonSelect = async (option: OptionsType) => {
+    setValue("pokemon", [...(watch("pokemon") || []), option]);
   };
 
   const handleNext = useCallback(async () => {
@@ -63,11 +59,34 @@ const PokemonSelect = () => {
       POKEMON_LIMIT,
       offset
     );
+    const optionsList = pokemonToOptionObj(res);
 
-    setHasMore(res.length === POKEMON_LIMIT);
-    setPokemonList((prev) => [...prev, ...res]);
+    setHasMore(optionsList.length === POKEMON_LIMIT);
+    setPokemonList((prev) => [...prev, ...optionsList]);
     setIsLoading(false);
   }, [pokemonList.length]);
+
+  const extractPokemonObjects = (data: Array<any>) => {
+    const result: Array<PokemonType> = [];
+
+    for (const item of data) {
+      if (item.hasOwnProperty("pokemon")) {
+        const pokemonObj: PokemonType = item.pokemon;
+        result.push(pokemonObj);
+      }
+    }
+
+    return result;
+  };
+
+  const handleOnFilterSelect = async (type: string) => {
+    const res = await POKEMON_API.getPokemonsByType(type);
+    const pokemons = extractPokemonObjects(res);
+    const optionsList = pokemonToOptionObj(pokemons);
+    setFilter(type);
+
+    setPokemonList(optionsList);
+  };
 
   return (
     <>
@@ -86,14 +105,25 @@ const PokemonSelect = () => {
       </div>
       <Select
         filterList={POKEMON_TYPES_LIST}
+        filter={filter}
+        options={pokemonList}
         name="pokemon"
         register={register("pokemon", {
           validate: (value) =>
             value?.length === 4 || "There must be 4 Pokémon selected",
         })}
         placeholder="Select a pokemon"
-        onOptionInputClick={(url: string) => setSelectedPokemonSprite(url)}
+        onSelectedOptionClick={(e, { label, value }) =>
+          setSelectedPokemonSprite(value as string)
+        }
         maxSelected={4}
+        async={{
+          isLoading,
+          hasMore,
+          onLoadMore: handleNext,
+        }}
+        onClearFilterList={fetchPokemonList}
+        onFilterSelect={handleOnFilterSelect}
       />
       <p
         className={`${

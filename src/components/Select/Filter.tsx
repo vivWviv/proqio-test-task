@@ -1,57 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { PokemonType } from '../../types/types';
-import { firstLetterCapitalize } from '../../helpers/string';
-import { POKEMON_API } from '../../api/api';
+import { firstLetterCapitalize } from "../../helpers/string";
 
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { XMarkIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
-interface PokemonFilterProps {
-  setFilteredPokemonList: React.Dispatch<React.SetStateAction<PokemonType[]>>;
+interface FilterProps {
+  onFilterSelect?: (value: string) => void;
   filter: string;
-  setFilter: React.Dispatch<React.SetStateAction<string>>;
   filterList: string[];
-  fetchPokemonList: () => void;
+  onClearFilterList?: () => void;
 }
 
-const Filter: React.FC<PokemonFilterProps> = ({
-  setFilteredPokemonList,
+const Filter: React.FC<FilterProps> = ({
+  onFilterSelect,
   filter,
-  setFilter,
   filterList,
-  fetchPokemonList,
+  onClearFilterList,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleClearFilter = async () => {
-    setFilter('');
-
-    fetchPokemonList();
+    if (onClearFilterList) onClearFilterList();
   };
 
   const handleDropdownToggle = () => {
-    setIsDropdownOpen(prev => !prev);
-  };
-
-  const extractPokemonObjects = (data: Array<any>) => {
-    const result: Array<PokemonType> = [];
-
-    for (const item of data) {
-      if (item.hasOwnProperty('pokemon')) {
-        const pokemonObj: PokemonType = item.pokemon;
-        result.push(pokemonObj);
-      }
-    }
-
-    return result;
+    setIsDropdownOpen((prev) => !prev);
   };
 
   const handleOptionClick = async (type: string) => {
-    setFilter(type);
-    const res = await POKEMON_API.getPokemonsByType(type);
-    const pokemons = extractPokemonObjects(res);
-    setFilteredPokemonList(pokemons);
+    if (onFilterSelect) onFilterSelect(type);
 
     setIsDropdownOpen(false);
   };
@@ -65,19 +43,19 @@ const Filter: React.FC<PokemonFilterProps> = ({
             onClick={handleDropdownToggle}
           >
             <div className="text-gray-900">
-              {filter ? firstLetterCapitalize(filter) : 'Filter By'}
+              {filter ? firstLetterCapitalize(filter) : "Filter By"}
             </div>
             <ChevronDownIcon className="w-4 h-4 text-gray-400" />
           </div>
           {isDropdownOpen && (
             <div className="absolute top-0 left-24 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto">
-              {filterList.map(type => (
+              {filterList.map((value) => (
                 <div
-                  key={type}
+                  key={value}
                   className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleOptionClick(type)}
+                  onClick={() => handleOptionClick(value)}
                 >
-                  {firstLetterCapitalize(type)}
+                  {firstLetterCapitalize(value)}
                 </div>
               ))}
             </div>
