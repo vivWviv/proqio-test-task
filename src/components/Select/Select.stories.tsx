@@ -1,25 +1,52 @@
-import React from "react";
-import { Meta, StoryObj } from "@storybook/react";
+import React, { useState } from "react";
+import { StoryObj } from "@storybook/react";
 import { FormProvider, useForm } from "react-hook-form";
+
 import Select from "./Select";
+import { OptionsType } from "../../types/types";
 
 const meta = {
   component: (args: any) => {
     const methods = useForm();
 
-    if (!methods.formState) {
-      return null;
-    }
+    const [filter, setFilter] = useState<string>(args.filter || "");
+    const [options, setOptions] = useState<OptionsType[]>(args.options || []);
+
+    const onClearFilterList = () => {
+      setFilter("");
+      setOptions(args.options);
+    };
+
+    const onFilterSelect = (value: string) => {
+      const filtredArray = Array.from(Array(4).keys()).map((el) => {
+        return { label: value + el, value: el };
+      });
+      setFilter(value);
+      setOptions(filtredArray);
+    };
 
     return (
       <FormProvider {...methods}>
         <form className="mt-10">
-          <Select {...args} />
+          {filter === "" || filter ? (
+            <Select
+              {...args}
+              options={options}
+              filter={{
+                filter: filter,
+                onClearFilterList,
+                onFilterSelect,
+                filterList: args.filterList,
+              }}
+            />
+          ) : (
+            <Select {...args} options={options} />
+          )}
         </form>
       </FormProvider>
     );
   },
-} satisfies Meta<typeof Select>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -39,19 +66,8 @@ export const Default: Story = {
     disabled: false,
     maxSelected: 3,
     isError: false,
-    // filter: {
-    //   onClearFilterList: () => {
-    //     console.log("Add you logic here)";
-    //   },
-    //   onFilterSelect: (value) => {
-    //     const filteredOptions = options.filter((option) =>
-    //       option.label.toLowerCase().includes(value.toLowerCase())
-    //     );
-    //     setPokemonList(filteredOptions);
-    //   },
-    //   filter: "",
-    //   filterList: ["Filter 1", "Filter 2", "Filter 3"],
-    // },
+    filterList: ["Filter 1", "Filter 2", "Filter 3"],
+    filter: "",
   },
 };
 
@@ -140,5 +156,21 @@ export const WithCustomOptions: Story = {
       { label: "Your option 4", value: "Your value 4" },
       { label: "Your option 5", value: "Your value 5" },
     ],
+  },
+};
+
+export const WithFilter: Story = {
+  args: {
+    name: "pokemon",
+    placeholder: "Choose a Pokemon",
+    options: [
+      { label: "Test", value: "test" },
+      { label: "Test2", value: "test2" },
+      { label: "Test3", value: "test3" },
+      { label: "Test4", value: "test4" },
+      { label: "Test5", value: "test5" },
+    ],
+    filterList: ["Filter 1", "Filter 2", "Filter 3"],
+    filter: "Some Default Filter",
   },
 };

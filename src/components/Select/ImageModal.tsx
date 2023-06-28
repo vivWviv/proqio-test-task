@@ -1,16 +1,16 @@
-import React from 'react';
-import { createPortal } from 'react-dom';
+import React from "react";
+import { createPortal } from "react-dom";
 
-import useEscapeKey from '../../helpers/EscapeKey';
+import useEscapeKey from "../../helpers/EscapeKey";
 
-import { XMarkIcon } from '@heroicons/react/24/solid';
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
-interface PokemonSpriteProps {
+interface ImageModalProps {
   closeModal: () => void;
   image: string;
 }
 
-const ImageModal: React.FC<PokemonSpriteProps> = ({ closeModal, image }) => {
+const ImageModal: React.FC<ImageModalProps> = ({ closeModal, image }) => {
   useEscapeKey(closeModal);
 
   return createPortal(

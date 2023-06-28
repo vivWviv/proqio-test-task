@@ -24,6 +24,14 @@ export interface SelectProps {
     onLoadMore: () => void;
     hasMore: boolean;
   };
+
+  filter?: {
+    onClearFilterList: () => void;
+    onFilterSelect: (value: string) => void;
+    filter: string;
+    filterList: string[];
+  };
+
   onOptionClick?: (
     e: React.MouseEvent<HTMLLIElement, MouseEvent>,
     option: OptionsType
@@ -36,13 +44,6 @@ export interface SelectProps {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     option: OptionsType
   ) => void;
-
-  filter?: {
-    onClearFilterList: () => void;
-    onFilterSelect: (value: string) => void;
-    filter: string;
-    filterList: string[];
-  };
 }
 
 const Select: React.FC<SelectProps> = ({

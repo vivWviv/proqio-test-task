@@ -1,20 +1,20 @@
 import { useEffect, useRef, ReactNode } from "react";
 
-interface InfiniteScrollDropdownProps {
-  height: string;
+interface InfiniteScroll {
+  children: ReactNode;
+  height?: string;
   hasMore?: boolean;
   isLoading?: boolean;
   next?: () => void;
-  children: ReactNode;
 }
 
-const InfiniteScrollDropdown = ({
+const InfiniteScroll = ({
   height,
   hasMore,
   isLoading,
   next,
   children,
-}: InfiniteScrollDropdownProps) => {
+}: InfiniteScroll) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = () => {
@@ -59,4 +59,4 @@ const InfiniteScrollDropdown = ({
   );
 };
 
-export default InfiniteScrollDropdown;
+export default InfiniteScroll;
