@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 @layer utilities {
-    @variants responsive {
         .hide-scrollbar::-webkit-scrollbar {
             width: 0;
             height: 0;
@@ -29,5 +28,4 @@
         .show-error-outline {
             outline: 2px solid #f66363;
         }
-    }
 }

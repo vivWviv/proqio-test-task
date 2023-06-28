@@ -8,42 +8,33 @@ import {
   getPokemonIdFromLink,
 } from '../../helpers/string';
 import { POKEMON_API } from '../../api/api';
-import ImageModal from './ImageModal';
 import { OptionsType, PokemonType } from '../../types/types';
 import Filter from './Filter';
 import { POKEMON_LIMIT } from '../../constants/constants';
 import { BASE_SPRITE_LINK } from '../../constants/constants';
 
-import {
-  XMarkIcon,
-  ChevronDownIcon,
-  InformationCircleIcon,
-} from '@heroicons/react/24/solid';
+import { XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
 
 export interface PokemonSelectProps {
-  label?: string;
   filterList?: string[];
   placeholder?: string;
   dropDownHeight?: string;
   name?: string;
   options?: OptionsType[];
-  helpfultext?: string;
-  tooltipInfo?: string;
   register?: (name: string, options?: RegisterOptions) => RefCallBack;
   disabled?: boolean;
+  onOptionInInputClick?: (value: string) => void;
 }
 
 const Select: React.FC<PokemonSelectProps> = ({
   filterList = [],
   dropDownHeight,
-  label,
   placeholder,
   name,
   options,
-  helpfultext,
-  tooltipInfo,
   register,
   disabled,
+  onOptionInInputClick,
 }) => {
   const methods = useFormContext();
 
@@ -56,9 +47,7 @@ const Select: React.FC<PokemonSelectProps> = ({
   const [pokemonList, setPokemonList] = useState<PokemonType[]>([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [isToolTipVisible, setIsToolTipVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedPokemonSprite, setSelectedPokemonSprite] = useState('');
   const [filter, setFilter] = useState('');
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -162,8 +151,7 @@ const Select: React.FC<PokemonSelectProps> = ({
     pokemon: PokemonType
   ) => {
     e.stopPropagation();
-
-    setSelectedPokemonSprite(pokemon.imageUrl);
+    if (onOptionInInputClick) onOptionInInputClick(pokemon.imageUrl);
   };
 
   return (
@@ -189,74 +177,55 @@ const Select: React.FC<PokemonSelectProps> = ({
                 </option>
               ))}
         </select>
-
-        <div className="mb-2 flex items-center gap-1 relative">
-          {label || 'Pokemon'}
-          <InformationCircleIcon
-            className="fill-gray-600 h-4 w-4 cursor-pointer"
-            onMouseEnter={() => setIsToolTipVisible(true)}
-            onMouseLeave={() => setIsToolTipVisible(false)}
-          />
-          {isToolTipVisible && (
-            <div className="absolute p-2 bg-gray-100 text-gray-600 rounded mt-1 text-xs max-w-xs whitespace-pre-wrap top-[-45px]">
-              {tooltipInfo || 'You have to choose 4 pokemons'}
-            </div>
-          )}
-        </div>
-
-        <div>
-          <div
-            className={`w-full rounded-md text-gray-400 border border-gray-300 cursor-pointer px-3 py-2 flex items-center justify-between bg-white show-outline ${
-              errors[name || 'pokemon']
-                ? 'show-error-outline'
-                : 'border-gray-300'
-            } ${
-              disabled &&
-              ' hover:outline-none bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]'
-            }`}
-            onClick={handleInputClick}
-            tabIndex={0}
-          >
-            {watch(name || 'pokemon')?.length ? (
-              <div
-                className="flex gap-1 hide-scrollbar overflow-x-scroll"
-                onWheel={e => handleWheelScroll(e)}
-              >
-                {watch(name || 'pokemon')?.map((pokemon: PokemonType) => (
-                  <div
-                    key={pokemon.name}
-                    className="flex items-center space-x-1 text-sm text-black bg-gray-100 rounded-xl py-0.5 px-2.5"
+        <div
+          className={`w-full rounded-md text-gray-400 border border-gray-300 cursor-pointer px-3 py-2 flex items-center justify-between bg-white show-outline ${
+            errors[name || 'pokemon'] ? 'show-error-outline' : 'border-gray-300'
+          } ${
+            disabled &&
+            ' hover:outline-none bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]'
+          }`}
+          onClick={handleInputClick}
+          tabIndex={0}
+        >
+          {watch(name || 'pokemon')?.length ? (
+            <div
+              className="flex gap-1 hide-scrollbar overflow-x-scroll"
+              onWheel={e => handleWheelScroll(e)}
+            >
+              {watch(name || 'pokemon')?.map((pokemon: PokemonType) => (
+                <div
+                  key={pokemon.name}
+                  className="flex items-center space-x-1 text-sm text-black bg-gray-100 rounded-xl py-0.5 px-2.5"
+                >
+                  <span onClick={e => onPokemonNameClick(e, pokemon)}>
+                    {firstLetterCapitalize(pokemon.name)}
+                  </span>
+                  <button
+                    onClick={e => handleRemovePokemon(e, pokemon)}
+                    className="mt-0.5"
                   >
-                    <span onClick={e => onPokemonNameClick(e, pokemon)}>
-                      {firstLetterCapitalize(pokemon.name)}
-                    </span>
-                    <button
-                      onClick={e => handleRemovePokemon(e, pokemon)}
-                      className="mt-0.5"
-                    >
-                      <XMarkIcon className="h-4 w-4 text-gray-500" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <>{placeholder || 'Select a Pokemon'}</>
-            )}
-            <div className="flex items-center gap-1.5 p-1">
-              <div className="h-4 w-4">
-                {watch(name || 'pokemon')?.length > 0 && (
-                  <XMarkIcon
-                    className="h-4 w-4"
-                    onClick={() => setValue(name || 'pokemon', [])}
-                    stroke={'black'}
-                  />
-                )}
-              </div>
-              <ChevronDownIcon
-                className="h-4 w-4"
-                stroke={disabled ? '#CDD2FA' : 'black'}
-              />
+                    <XMarkIcon className="h-4 w-4 text-gray-500" />
+                  </button>
+                </div>
+              ))}
             </div>
+          ) : (
+            <>{placeholder || 'Select a Pokemon'}</>
+          )}
+          <div className="flex items-center gap-1.5 p-1">
+            <div className="h-4 w-4">
+              {watch(name || 'pokemon')?.length > 0 && (
+                <XMarkIcon
+                  className="h-4 w-4"
+                  onClick={() => setValue(name || 'pokemon', [])}
+                  stroke={'black'}
+                />
+              )}
+            </div>
+            <ChevronDownIcon
+              className="h-4 w-4"
+              stroke={disabled ? '#CDD2FA' : 'black'}
+            />
           </div>
         </div>
 
@@ -308,23 +277,7 @@ const Select: React.FC<PokemonSelectProps> = ({
             </InfiniteScroll>
           </div>
         )}
-
-        <p
-          className={`${
-            errors[name || 'pokemon'] ? 'text-red-500' : 'text-gray-500'
-          } text-sm mt-2`}
-        >
-          {errors[name || 'pokemon']
-            ? errors[name || 'pokemon']?.message!.toString()
-            : helpfultext || 'Pokemons is required'}
-        </p>
       </div>
-      {selectedPokemonSprite && (
-        <ImageModal
-          closeModal={() => setSelectedPokemonSprite('')}
-          image={selectedPokemonSprite}
-        />
-      )}
     </>
   );
 };

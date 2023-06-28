@@ -65,7 +65,7 @@ const Filter: React.FC<PokemonFilterProps> = ({
             onClick={handleDropdownToggle}
           >
             <div className="text-gray-900">
-              {filter ? firstLetterCapitalize(filter) : 'Filter by'}
+              {filter ? firstLetterCapitalize(filter) : 'Filter By'}
             </div>
             <ChevronDownIcon className="w-4 h-4 text-gray-400" />
           </div>

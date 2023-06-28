@@ -2,10 +2,9 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import InputField from './InputField';
-import Select from './Select/Select';
 import { FormData } from '../types/types';
-import { POKEMON_TYPES_LIST } from '../constants/constants';
 import Button from './Button';
+import PokemonSelect from './PokemonSelect';
 
 interface FormProps {
   submitForm: (data: FormData) => void;
@@ -35,7 +34,7 @@ const Form: React.FC<FormProps> = ({ submitForm, closeModal }) => {
         <InputField label="Name" name="name" />
         <InputField label="Surname" name="surname" />
 
-        <Select filterList={POKEMON_TYPES_LIST} />
+        <PokemonSelect />
 
         <div className="flex gap-2">
           <Button
