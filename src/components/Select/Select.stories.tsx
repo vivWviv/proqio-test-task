@@ -24,43 +24,58 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
+export const Default: Story = {
   args: {
-    label: 'Select Pokemon',
-    labelInfo: 'You can choose up to 4 pokemons',
     placeholder: 'Choose a Pokemon',
     filterList: ['Fire', 'Water', 'Electric'],
     dropDownHeight: '200px',
-  },
-};
-
-export const WithLabel = {
-  args: {
-    label: 'Select Pokemon',
-  },
-};
-
-export const WithLabelInfo = {
-  args: {
-    label: 'Select Pokemon',
-    labelInfo: 'You can choose up to 4 pokemons',
+    name: 'pokemon',
   },
 };
 
 export const WithPlaceholder = {
   args: {
-    placeholder: 'Choose a Pokemon',
+    placeholder: 'Custom placeholder',
+    name: 'pokemon',
   },
 };
 
 export const WithFilterList = {
   args: {
     filterList: ['Fire', 'Water', 'Electric'],
+    name: 'pokemon',
+    placeholder: 'Select a Pokemon',
   },
 };
 
 export const WithDropDownHeight = {
   args: {
     dropDownHeight: '200px',
+    name: 'pokemon',
+    placeholder: 'Select a Pokemon',
+  },
+};
+
+export const WithDisabled = {
+  args: {
+    disabled: true,
+    name: 'pokemon',
+    placeholder: 'Select a Pokemon',
+  },
+};
+
+export const WithMaxSelected = {
+  args: {
+    maxSelected: 10,
+    name: 'pokemon',
+    placeholder: 'Select a Pokemon',
+  },
+};
+
+export const WithError = {
+  args: {
+    error: true,
+    name: 'pokemon',
+    placeholder: 'Select a Pokemon',
   },
 };

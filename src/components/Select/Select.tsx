@@ -16,25 +16,29 @@ import { BASE_SPRITE_LINK } from '../../constants/constants';
 import { XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
 
 export interface PokemonSelectProps {
+  name: string;
+  placeholder: string;
   filterList?: string[];
-  placeholder?: string;
   dropDownHeight?: string;
-  name?: string;
   options?: OptionsType[];
   register?: (name: string, options?: RegisterOptions) => RefCallBack;
   disabled?: boolean;
   onOptionInInputClick?: (value: string) => void;
+  maxSelected?: number;
+  error?: boolean;
 }
 
 const Select: React.FC<PokemonSelectProps> = ({
+  name,
   filterList = [],
   dropDownHeight,
   placeholder,
-  name,
   options,
   register,
   disabled,
   onOptionInInputClick,
+  maxSelected,
+  error,
 }) => {
   const methods = useFormContext();
 
@@ -52,10 +56,14 @@ const Select: React.FC<PokemonSelectProps> = ({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const isMaxSelected = watch(name || 'pokemon')?.length >= 4;
+  const isMaxSelected = () => {
+    if (maxSelected) {
+      return watch(name)?.length >= maxSelected;
+    } else return watch(name)?.length >= 4;
+  };
 
   useEffect(() => {
-    setValue(name || 'pokemon', watch(name || 'pokemon'));
+    setValue(name, watch(name));
   }, [watch, setValue, name]);
 
   useEffect(() => {
@@ -90,7 +98,7 @@ const Select: React.FC<PokemonSelectProps> = ({
   };
 
   const handlePokemonSelect = async (pokemon: PokemonType) => {
-    if (isMaxSelected) return;
+    if (isMaxSelected()) return;
     const id = getPokemonIdFromLink(pokemon.url as string);
 
     const newPokemon = {
@@ -98,10 +106,7 @@ const Select: React.FC<PokemonSelectProps> = ({
       imageUrl: BASE_SPRITE_LINK + id + '.png',
     };
 
-    setValue(name || 'pokemon', [
-      ...(watch(name || 'pokemon') || []),
-      newPokemon,
-    ]);
+    setValue(name, [...(watch(name) || []), newPokemon]);
     setIsDropdownVisible(false);
   };
 
@@ -110,9 +115,9 @@ const Select: React.FC<PokemonSelectProps> = ({
       e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
       pokemon: PokemonType
     ) => {
-      const currentSelectedPokemonList = watch(name || 'pokemon') || [];
+      const currentSelectedPokemonList = watch(name) || [];
       setValue(
-        name || 'pokemon',
+        name,
         currentSelectedPokemonList.filter(
           (p: PokemonType) => p.name !== pokemon.name
         ),
@@ -123,7 +128,7 @@ const Select: React.FC<PokemonSelectProps> = ({
   );
 
   const handleInputClick = () => {
-    if (isMaxSelected) return;
+    if (isMaxSelected()) return;
 
     setIsDropdownVisible(prev => !prev);
   };
@@ -160,7 +165,7 @@ const Select: React.FC<PokemonSelectProps> = ({
         <select
           className="absolute hidden"
           multiple
-          {...methods.register(name || 'pokemon', {
+          {...methods.register(name, {
             validate: value =>
               value?.length === 4 || 'There must be 4 pokemon selected',
           })}
@@ -171,33 +176,37 @@ const Select: React.FC<PokemonSelectProps> = ({
                   {item.label}
                 </option>
               ))
-            : watch(name || 'pokemon')?.map((item: PokemonType) => (
+            : watch(name)?.map((item: PokemonType) => (
                 <option key={item.name} value={item.name}>
                   {item.name}
                 </option>
               ))}
         </select>
         <div
-          className={`w-full rounded-md text-gray-400 border border-gray-300 cursor-pointer px-3 py-2 flex items-center justify-between bg-white show-outline ${
-            errors[name || 'pokemon'] ? 'show-error-outline' : 'border-gray-300'
+          className={`w-full rounded-md cursor-pointer px-3 py-2 border flex items-center justify-between ${
+            error || errors[name] ? 'show-error-outline' : 'show-outline'
           } ${
-            disabled &&
-            ' hover:outline-none bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]'
+            disabled
+              ? 'bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]'
+              : 'text-gray-400 bg-white border-gray-300'
           }`}
           onClick={handleInputClick}
           tabIndex={0}
         >
-          {watch(name || 'pokemon')?.length ? (
+          {watch(name)?.length ? (
             <div
               className="flex gap-1 hide-scrollbar overflow-x-scroll"
               onWheel={e => handleWheelScroll(e)}
             >
-              {watch(name || 'pokemon')?.map((pokemon: PokemonType) => (
+              {watch(name)?.map((pokemon: PokemonType) => (
                 <div
                   key={pokemon.name}
                   className="flex items-center space-x-1 text-sm text-black bg-gray-100 rounded-xl py-0.5 px-2.5"
                 >
-                  <span onClick={e => onPokemonNameClick(e, pokemon)}>
+                  <span
+                    onClick={e => onPokemonNameClick(e, pokemon)}
+                    className="whitespace-nowrap"
+                  >
                     {firstLetterCapitalize(pokemon.name)}
                   </span>
                   <button
@@ -210,14 +219,14 @@ const Select: React.FC<PokemonSelectProps> = ({
               ))}
             </div>
           ) : (
-            <>{placeholder || 'Select a Pokemon'}</>
+            placeholder
           )}
           <div className="flex items-center gap-1.5 p-1">
             <div className="h-4 w-4">
-              {watch(name || 'pokemon')?.length > 0 && (
+              {watch(name)?.length > 0 && (
                 <XMarkIcon
                   className="h-4 w-4"
-                  onClick={() => setValue(name || 'pokemon', [])}
+                  onClick={() => setValue(name, [])}
                   stroke={'black'}
                 />
               )}
@@ -257,7 +266,7 @@ const Select: React.FC<PokemonSelectProps> = ({
               <ul>
                 {pokemonList.map(pokemon => {
                   if (
-                    !watch(name || 'pokemon')?.some(
+                    !watch(name)?.some(
                       (p: PokemonType) => p.name === pokemon.name
                     )
                   ) {
