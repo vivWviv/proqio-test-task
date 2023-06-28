@@ -74,7 +74,7 @@ export const WithMaxSelected = {
 
 export const WithError = {
   args: {
-    error: true,
+    isError: true,
     name: 'pokemon',
     placeholder: 'Select a Pokemon',
   },

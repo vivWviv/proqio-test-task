@@ -12,6 +12,7 @@ const PokemonSelect = () => {
 
   const {
     formState: { errors },
+    register,
   } = methods;
 
   const [isToolTipVisible, setIsToolTipVisible] = useState(false);
@@ -35,6 +36,10 @@ const PokemonSelect = () => {
       <Select
         filterList={POKEMON_TYPES_LIST}
         name="pokemon"
+        register={register('pokemon', {
+          validate: value =>
+            value?.length === 4 || 'There must be 4 Pokémon selected',
+        })}
         placeholder="Select a pokemon"
         onOptionInInputClick={(url: string) => setSelectedPokemonSprite(url)}
       />

@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { RefCallBack, RegisterOptions, useFormContext } from 'react-hook-form';
+import {
+  FieldValues,
+  RegisterOptions,
+  useFormContext,
+  UseFormRegister,
+} from 'react-hook-form';
 
 import InfiniteScroll from './InfiniteScroll';
 
@@ -18,14 +23,14 @@ import { XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
 export interface PokemonSelectProps {
   name: string;
   placeholder: string;
+  register: UseFormRegister<FieldValues>;
   filterList?: string[];
   dropDownHeight?: string;
   options?: OptionsType[];
-  register?: (name: string, options?: RegisterOptions) => RefCallBack;
   disabled?: boolean;
   onOptionInInputClick?: (value: string) => void;
   maxSelected?: number;
-  error?: boolean;
+  isError?: boolean;
 }
 
 const Select: React.FC<PokemonSelectProps> = ({
@@ -38,7 +43,7 @@ const Select: React.FC<PokemonSelectProps> = ({
   disabled,
   onOptionInInputClick,
   maxSelected,
-  error,
+  isError,
 }) => {
   const methods = useFormContext();
 
@@ -162,14 +167,7 @@ const Select: React.FC<PokemonSelectProps> = ({
   return (
     <>
       <div className="relative">
-        <select
-          className="absolute hidden"
-          multiple
-          {...methods.register(name, {
-            validate: value =>
-              value?.length === 4 || 'There must be 4 pokemon selected',
-          })}
-        >
+        <select className="absolute hidden" multiple {...register}>
           {options
             ? options.map(item => (
                 <option key={item.label} value={item.value}>
@@ -184,7 +182,7 @@ const Select: React.FC<PokemonSelectProps> = ({
         </select>
         <div
           className={`w-full rounded-md cursor-pointer px-3 py-2 border flex items-center justify-between ${
-            error || errors[name] ? 'show-error-outline' : 'show-outline'
+            isError || errors[name] ? 'show-error-outline' : 'show-outline'
           } ${
             disabled
               ? 'bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]'
