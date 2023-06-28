@@ -1,10 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import {
-  FieldValues,
-  RegisterOptions,
-  useFormContext,
-  UseFormRegister,
-} from 'react-hook-form';
+import { useFormContext, UseFormRegisterReturn } from 'react-hook-form';
 
 import InfiniteScroll from './InfiniteScroll';
 
@@ -23,7 +18,7 @@ import { XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
 export interface PokemonSelectProps {
   name: string;
   placeholder: string;
-  register: UseFormRegister<FieldValues>;
+  register: UseFormRegisterReturn<string>;
   filterList?: string[];
   dropDownHeight?: string;
   options?: OptionsType[];
