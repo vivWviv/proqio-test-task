@@ -24,7 +24,7 @@ function App() {
             {submitData.pokemon.map(el => (
               <div key={el.name} className="flex flex-col items-center">
                 <img
-                  src={el.url}
+                  src={el.value.url}
                   alt={`${firstLetterCapitalize(el.name)} Sprite`}
                   className="w-16 h-16 rounded-md"
                 />

@@ -1,57 +1,42 @@
 import React, { useState } from 'react';
 
-import { PokemonType } from '../../types/types';
 import { firstLetterCapitalize } from '../../helpers/string';
-import { POKEMON_API } from '../../api/api';
 
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 
-interface PokemonFilterProps {
-  setFilteredPokemonList: React.Dispatch<React.SetStateAction<PokemonType[]>>;
+interface FilterProps {
   filter: string;
-  setFilter: React.Dispatch<React.SetStateAction<string>>;
+  setFilter: (value: string) => void;
   filterList: string[];
-  fetchPokemonList: () => void;
+  onClearFilterClick?: () => void;
+  onFilterOptionClick: () => void;
 }
 
-const Filter: React.FC<PokemonFilterProps> = ({
-  setFilteredPokemonList,
+const Filter: React.FC<FilterProps> = ({
   filter,
   setFilter,
   filterList,
-  fetchPokemonList,
+  onFilterOptionClick,
+  onClearFilterClick,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleClearFilter = async () => {
     setFilter('');
 
-    fetchPokemonList();
+    if (onClearFilterClick) onClearFilterClick();
   };
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(prev => !prev);
   };
 
-  const extractPokemonObjects = (data: Array<any>) => {
-    const result: Array<PokemonType> = [];
+  const handleOptionClick = async (filterName: string) => {
+    setFilter(filterName);
+    console.log(filterName);
 
-    for (const item of data) {
-      if (item.hasOwnProperty('pokemon')) {
-        const pokemonObj: PokemonType = item.pokemon;
-        result.push(pokemonObj);
-      }
-    }
-
-    return result;
-  };
-
-  const handleOptionClick = async (type: string) => {
-    setFilter(type);
-    const res = await POKEMON_API.getPokemonsByType(type);
-    const pokemons = extractPokemonObjects(res);
-    setFilteredPokemonList(pokemons);
+    onFilterOptionClick();
 
     setIsDropdownOpen(false);
   };
@@ -71,13 +56,13 @@ const Filter: React.FC<PokemonFilterProps> = ({
           </div>
           {isDropdownOpen && (
             <div className="absolute top-0 left-24 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto">
-              {filterList.map(type => (
+              {filterList.map(filterName => (
                 <div
-                  key={type}
+                  key={filterName}
                   className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleOptionClick(type)}
+                  onClick={() => handleOptionClick(filterName)}
                 >
-                  {firstLetterCapitalize(type)}
+                  {firstLetterCapitalize(filterName)}
                 </div>
               ))}
             </div>

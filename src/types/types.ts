@@ -1,16 +1,15 @@
 export interface PokemonType {
   name: string;
-  imageUrl: string;
-  url?: string;
+  url: string;
+}
+
+export interface ExtendedPokemonType {
+  name: string;
+  value: PokemonType;
 }
 
 export interface FormData {
   name: string;
   surname: string;
-  pokemon: PokemonType[];
-}
-
-export interface OptionsType {
-  label: string;
-  value?: string | number | readonly string[];
+  pokemon: ExtendedPokemonType[];
 }

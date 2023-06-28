@@ -2,9 +2,9 @@ import { useEffect, useRef, ReactNode } from 'react';
 
 interface InfiniteScrollDropdownProps {
   height: string;
-  hasMore: boolean;
-  isLoading: boolean;
-  next: () => void;
+  hasMore?: boolean;
+  isLoading?: boolean;
+  next?: () => void;
   children: ReactNode;
 }
 
@@ -21,7 +21,12 @@ const InfiniteScrollDropdown = ({
     if (!containerRef.current) return;
 
     const { scrollTop, clientHeight, scrollHeight } = containerRef.current;
-    if (scrollTop + clientHeight >= scrollHeight && hasMore && !isLoading) {
+    if (
+      scrollTop + clientHeight >= scrollHeight &&
+      hasMore &&
+      !isLoading &&
+      next
+    ) {
       next();
     }
   };
