@@ -8,7 +8,6 @@ import { OptionsType } from "../../types/types";
 import Filter from "./Filter";
 
 import { XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
-import { logDOM } from "@storybook/testing-library";
 
 export interface SelectProps {
   name: string;
@@ -38,15 +37,16 @@ export interface SelectProps {
     option: OptionsType
   ) => void;
 
-  onClearFilterList: () => void;
-  onFilterSelect: (value: string) => void;
-  filter?: string;
-  filterList?: string[];
+  filter?: {
+    onClearFilterList: () => void;
+    onFilterSelect: (value: string) => void;
+    filter: string;
+    filterList: string[];
+  };
 }
 
 const Select: React.FC<SelectProps> = ({
   name,
-  filterList = [],
   dropDownHeight,
   placeholder,
   options,
@@ -58,9 +58,6 @@ const Select: React.FC<SelectProps> = ({
   onOptionClick,
   onSelectedOptionClick,
   onRemoveOptionClick,
-
-  onClearFilterList,
-  onFilterSelect,
   filter,
 }) => {
   const methods = useFormContext();
@@ -230,13 +227,13 @@ const Select: React.FC<SelectProps> = ({
             ref={dropdownRef}
             className="mt-2 p-2 absolute z-10 bg-white w-full border border-gray-300 rounded-md shadow-lg"
           >
-            {filterList && (filter === "" || filter !== undefined) && (
+            {filter && (
               <div>
                 <Filter
-                  onFilterSelect={onFilterSelect}
-                  filter={filter}
-                  filterList={filterList}
-                  onClearFilterList={onClearFilterList}
+                  onFilterSelect={filter.onFilterSelect}
+                  filter={filter.filter}
+                  filterList={filter.filterList}
+                  onClearFilterList={filter.onClearFilterList}
                 />
               </div>
             )}

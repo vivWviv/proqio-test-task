@@ -3,11 +3,7 @@ import { useFormContext } from "react-hook-form";
 
 import Select from "./Select/Select";
 import ImageModal from "./Select/ImageModal";
-import {
-  BASE_SPRITE_LINK,
-  POKEMON_LIMIT,
-  POKEMON_TYPES_LIST,
-} from "../constants/constants";
+import { POKEMON_LIMIT, POKEMON_TYPES_LIST } from "../constants/constants";
 
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { OptionsType, PokemonType } from "../types/types";
@@ -20,8 +16,6 @@ const PokemonSelect = () => {
   const {
     formState: { errors },
     register,
-    setValue,
-    watch,
   } = methods;
 
   const [isToolTipVisible, setIsToolTipVisible] = useState(false);
@@ -45,10 +39,6 @@ const PokemonSelect = () => {
     setHasMore(optionsList.length === POKEMON_LIMIT);
     setPokemonList(optionsList);
     setIsLoading(false);
-  };
-
-  const handlePokemonSelect = async (option: OptionsType) => {
-    setValue("pokemon", [...(watch("pokemon") || []), option]);
   };
 
   const handleNext = useCallback(async () => {
@@ -104,8 +94,6 @@ const PokemonSelect = () => {
         )}
       </div>
       <Select
-        filterList={POKEMON_TYPES_LIST}
-        filter={filter}
         options={pokemonList}
         name="pokemon"
         register={register("pokemon", {
@@ -113,7 +101,7 @@ const PokemonSelect = () => {
             value?.length === 4 || "There must be 4 Pokémon selected",
         })}
         placeholder="Select a pokemon"
-        onSelectedOptionClick={(e, { label, value }) =>
+        onSelectedOptionClick={(e, { value }) =>
           setSelectedPokemonSprite(value as string)
         }
         maxSelected={4}
@@ -122,8 +110,12 @@ const PokemonSelect = () => {
           hasMore,
           onLoadMore: handleNext,
         }}
-        onClearFilterList={fetchPokemonList}
-        onFilterSelect={handleOnFilterSelect}
+        filter={{
+          filter,
+          filterList: POKEMON_TYPES_LIST,
+          onClearFilterList: fetchPokemonList,
+          onFilterSelect: handleOnFilterSelect,
+        }}
       />
       <p
         className={`${
