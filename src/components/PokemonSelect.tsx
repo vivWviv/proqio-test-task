@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import React, { useCallback, useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 
-import Select from './Select/Select';
-import ImageModal from './Select/ImageModal';
-import { POKEMON_TYPES_LIST } from '../constants/constants';
+import Select from "./Select/Select";
+import ImageModal from "./Select/ImageModal";
+import {
+  BASE_SPRITE_LINK,
+  POKEMON_LIMIT,
+  POKEMON_TYPES_LIST,
+} from "../constants/constants";
 
-import { InformationCircleIcon } from '@heroicons/react/24/solid';
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
+import { PokemonType } from "../types/types";
+import { POKEMON_API } from "../api/api";
+import { getPokemonIdFromLink } from "../helpers/string";
 
 const PokemonSelect = () => {
   const methods = useFormContext();
@@ -13,10 +20,54 @@ const PokemonSelect = () => {
   const {
     formState: { errors },
     register,
+    setValue,
+    watch,
   } = methods;
 
   const [isToolTipVisible, setIsToolTipVisible] = useState(false);
-  const [selectedPokemonSprite, setSelectedPokemonSprite] = useState('');
+  const [pokemonList, setPokemonList] = useState<PokemonType[]>([]);
+  const [selectedPokemonSprite, setSelectedPokemonSprite] = useState("");
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    fetchPokemonList();
+  }, []);
+
+  const fetchPokemonList = async () => {
+    setIsLoading(true);
+
+    const res: PokemonType[] = await POKEMON_API.getPokemons(POKEMON_LIMIT);
+
+    setHasMore(res.length === POKEMON_LIMIT);
+    setPokemonList(res);
+    setIsLoading(false);
+  };
+
+  const handlePokemonSelect = async (pokemon: PokemonType) => {
+    const id = getPokemonIdFromLink(pokemon.url as string);
+
+    const newPokemon = {
+      ...pokemon,
+      imageUrl: BASE_SPRITE_LINK + id + ".png",
+    };
+
+    setValue("pokemon", [...(watch("pokemon") || []), newPokemon]);
+  };
+
+  const handleNext = useCallback(async () => {
+    setIsLoading(true);
+
+    const offset = pokemonList.length;
+    const res: PokemonType[] = await POKEMON_API.getPokemons(
+      POKEMON_LIMIT,
+      offset
+    );
+
+    setHasMore(res.length === POKEMON_LIMIT);
+    setPokemonList((prev) => [...prev, ...res]);
+    setIsLoading(false);
+  }, [pokemonList.length]);
 
   return (
     <>
@@ -36,25 +87,26 @@ const PokemonSelect = () => {
       <Select
         filterList={POKEMON_TYPES_LIST}
         name="pokemon"
-        register={register('pokemon', {
-          validate: value =>
-            value?.length === 4 || 'There must be 4 Pokémon selected',
+        register={register("pokemon", {
+          validate: (value) =>
+            value?.length === 4 || "There must be 4 Pokémon selected",
         })}
         placeholder="Select a pokemon"
-        onOptionInInputClick={(url: string) => setSelectedPokemonSprite(url)}
+        onOptionInputClick={(url: string) => setSelectedPokemonSprite(url)}
+        maxSelected={4}
       />
       <p
         className={`${
-          errors.pokemon ? 'text-red-500' : 'text-gray-500'
+          errors.pokemon ? "text-red-500" : "text-gray-500"
         } text-sm mt-2`}
       >
         {errors.pokemon
           ? errors.pokemon.message!.toString()
-          : 'Pokemons is required'}
+          : "Pokemons is required"}
       </p>
       {selectedPokemonSprite && (
         <ImageModal
-          closeModal={() => setSelectedPokemonSprite('')}
+          closeModal={() => setSelectedPokemonSprite("")}
           image={selectedPokemonSprite}
         />
       )}

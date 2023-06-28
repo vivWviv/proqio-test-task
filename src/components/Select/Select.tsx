@@ -1,31 +1,46 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useFormContext, UseFormRegisterReturn } from 'react-hook-form';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useFormContext, UseFormRegisterReturn } from "react-hook-form";
 
-import InfiniteScroll from './InfiniteScroll';
+import InfiniteScroll from "./InfiniteScroll";
 
 import {
   firstLetterCapitalize,
   getPokemonIdFromLink,
-} from '../../helpers/string';
-import { POKEMON_API } from '../../api/api';
-import { OptionsType, PokemonType } from '../../types/types';
-import Filter from './Filter';
-import { POKEMON_LIMIT } from '../../constants/constants';
-import { BASE_SPRITE_LINK } from '../../constants/constants';
+} from "../../helpers/string";
+import { POKEMON_API } from "../../api/api";
+import { OptionsType, PokemonType } from "../../types/types";
+import Filter from "./Filter";
+import { POKEMON_LIMIT } from "../../constants/constants";
+import { BASE_SPRITE_LINK } from "../../constants/constants";
 
-import { XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
+import { XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 
 export interface PokemonSelectProps {
   name: string;
   placeholder: string;
   register: UseFormRegisterReturn<string>;
+  maxSelected?: number;
   filterList?: string[];
   dropDownHeight?: string;
   options?: OptionsType[];
   disabled?: boolean;
-  onOptionInInputClick?: (value: string) => void;
-  maxSelected?: number;
+  onOptionInputClick?: (value: string) => void;
   isError?: boolean;
+
+  async?: {
+    isLoading: boolean;
+    onLoadMore: () => void;
+    hasMore: boolean;
+  };
+  onOptionClick?: (options: OptionsType[]) => void;
+  onSelectedOptionClick?: (
+    e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
+    option: OptionsType
+  ) => void;
+  onRemoveOptionClick?: (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    option: OptionsType
+  ) => void;
 }
 
 const Select: React.FC<PokemonSelectProps> = ({
@@ -36,7 +51,7 @@ const Select: React.FC<PokemonSelectProps> = ({
   options,
   register,
   disabled,
-  onOptionInInputClick,
+  onOptionInputClick,
   maxSelected,
   isError,
 }) => {
@@ -52,19 +67,17 @@ const Select: React.FC<PokemonSelectProps> = ({
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState("");
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const isMaxSelected = () => {
     if (maxSelected) {
       return watch(name)?.length >= maxSelected;
-    } else return watch(name)?.length >= 4;
+    } else {
+      return false;
+    }
   };
-
-  useEffect(() => {
-    setValue(name, watch(name));
-  }, [watch, setValue, name]);
 
   useEffect(() => {
     fetchPokemonList();
@@ -80,10 +93,10 @@ const Select: React.FC<PokemonSelectProps> = ({
       }
     };
 
-    document.addEventListener('mousedown', handleDropdownOutsideClick);
+    document.addEventListener("mousedown", handleDropdownOutsideClick);
 
     return () => {
-      document.removeEventListener('mousedown', handleDropdownOutsideClick);
+      document.removeEventListener("mousedown", handleDropdownOutsideClick);
     };
   }, []);
 
@@ -103,7 +116,7 @@ const Select: React.FC<PokemonSelectProps> = ({
 
     const newPokemon = {
       ...pokemon,
-      imageUrl: BASE_SPRITE_LINK + id + '.png',
+      imageUrl: BASE_SPRITE_LINK + id + ".png",
     };
 
     setValue(name, [...(watch(name) || []), newPokemon]);
@@ -130,7 +143,7 @@ const Select: React.FC<PokemonSelectProps> = ({
   const handleInputClick = () => {
     if (isMaxSelected()) return;
 
-    setIsDropdownVisible(prev => !prev);
+    setIsDropdownVisible((prev) => !prev);
   };
 
   const handleNext = useCallback(async () => {
@@ -140,7 +153,7 @@ const Select: React.FC<PokemonSelectProps> = ({
     const res = await POKEMON_API.getPokemons(POKEMON_LIMIT, offset);
 
     setHasMore(res.length === POKEMON_LIMIT);
-    setPokemonList(prev => [...prev, ...res]);
+    setPokemonList((prev) => [...prev, ...res]);
     setIsLoading(false);
   }, [pokemonList.length]);
 
@@ -156,7 +169,7 @@ const Select: React.FC<PokemonSelectProps> = ({
     pokemon: PokemonType
   ) => {
     e.stopPropagation();
-    if (onOptionInInputClick) onOptionInInputClick(pokemon.imageUrl);
+    if (onOptionInputClick) onOptionInputClick(pokemon.imageUrl);
   };
 
   return (
@@ -164,7 +177,7 @@ const Select: React.FC<PokemonSelectProps> = ({
       <div className="relative">
         <select className="absolute hidden" multiple {...register}>
           {options
-            ? options.map(item => (
+            ? options.map((item) => (
                 <option key={item.label} value={item.value}>
                   {item.label}
                 </option>
@@ -177,11 +190,11 @@ const Select: React.FC<PokemonSelectProps> = ({
         </select>
         <div
           className={`w-full rounded-md cursor-pointer px-3 py-2 border flex items-center justify-between ${
-            isError || errors[name] ? 'show-error-outline' : 'show-outline'
+            isError || errors[name] ? "show-error-outline" : "show-outline"
           } ${
             disabled
-              ? 'bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]'
-              : 'text-gray-400 bg-white border-gray-300'
+              ? "bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]"
+              : "text-gray-400 bg-white border-gray-300"
           }`}
           onClick={handleInputClick}
           tabIndex={0}
@@ -189,7 +202,7 @@ const Select: React.FC<PokemonSelectProps> = ({
           {watch(name)?.length ? (
             <div
               className="flex gap-1 hide-scrollbar overflow-x-scroll"
-              onWheel={e => handleWheelScroll(e)}
+              onWheel={(e) => handleWheelScroll(e)}
             >
               {watch(name)?.map((pokemon: PokemonType) => (
                 <div
@@ -197,13 +210,13 @@ const Select: React.FC<PokemonSelectProps> = ({
                   className="flex items-center space-x-1 text-sm text-black bg-gray-100 rounded-xl py-0.5 px-2.5"
                 >
                   <span
-                    onClick={e => onPokemonNameClick(e, pokemon)}
+                    onClick={(e) => onPokemonNameClick(e, pokemon)}
                     className="whitespace-nowrap"
                   >
                     {firstLetterCapitalize(pokemon.name)}
                   </span>
                   <button
-                    onClick={e => handleRemovePokemon(e, pokemon)}
+                    onClick={(e) => handleRemovePokemon(e, pokemon)}
                     className="mt-0.5"
                   >
                     <XMarkIcon className="h-4 w-4 text-gray-500" />
@@ -220,13 +233,13 @@ const Select: React.FC<PokemonSelectProps> = ({
                 <XMarkIcon
                   className="h-4 w-4"
                   onClick={() => setValue(name, [])}
-                  stroke={'black'}
+                  stroke={"black"}
                 />
               )}
             </div>
             <ChevronDownIcon
               className="h-4 w-4"
-              stroke={disabled ? '#CDD2FA' : 'black'}
+              stroke={disabled ? "#CDD2FA" : "black"}
             />
           </div>
         </div>
@@ -251,13 +264,13 @@ const Select: React.FC<PokemonSelectProps> = ({
               isLoading={isLoading}
               height={
                 dropDownHeight ||
-                (pokemonList.length < 5 ? 'fit-content' : 'calc(100vh - 580px)')
+                (pokemonList.length < 5 ? "fit-content" : "calc(100vh - 580px)")
               }
               hasMore={hasMore}
               next={handleNext}
             >
               <ul>
-                {pokemonList.map(pokemon => {
+                {pokemonList.map((pokemon) => {
                   if (
                     !watch(name)?.some(
                       (p: PokemonType) => p.name === pokemon.name
