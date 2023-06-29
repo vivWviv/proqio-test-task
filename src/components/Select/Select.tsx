@@ -74,24 +74,24 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     useEffect(() => {
       setOptionList(options);
-    }, []);
+    }, [options]);
 
-    useEffect(() => {
-      const handleDropdownOutsideClick = (event: MouseEvent) => {
-        if (
-          dropdownRef.current &&
-          !dropdownRef.current.contains(event.target as Node)
-        ) {
-          setIsDropdownVisible(false);
-        }
-      };
-
-      document.addEventListener("mousedown", handleDropdownOutsideClick);
-
-      return () => {
-        document.removeEventListener("mousedown", handleDropdownOutsideClick);
-      };
-    }, []);
+    // useEffect(() => {
+    //   const handleDropdownOutsideClick = (event: MouseEvent) => {
+    //     if (
+    //       dropdownRef.current &&
+    //       !dropdownRef.current.contains(event.target as Node)
+    //     ) {
+    //       setIsDropdownVisible(false);
+    //     }
+    //   };
+    //
+    //   document.addEventListener("mousedown", handleDropdownOutsideClick);
+    //
+    //   return () => {
+    //     document.removeEventListener("mousedown", handleDropdownOutsideClick);
+    //   };
+    // }, []);
 
     const handleOptionSelectClick = (
       e: React.MouseEvent<HTMLLIElement, MouseEvent>,
