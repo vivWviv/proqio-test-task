@@ -14,7 +14,7 @@ import { XMarkIcon, ChevronDownIcon, SunIcon } from "@heroicons/react/24/solid";
 
 export interface SelectProps {
   name: string;
-  placeholder: string;
+  placeholder?: string;
   options: OptionsType[];
   register?: UseFormRegisterReturn<string>;
   dropDownHeight?: string;
@@ -222,7 +222,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ) : isLoading ? (
               <span>Loading...</span>
             ) : (
-              <span>{placeholder}</span>
+              <span>{placeholder || "Select..."}</span>
             )}
             <div className="flex items-center gap-1.5 p-1">
               <div className="h-4 w-4">
