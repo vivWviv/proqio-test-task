@@ -14,8 +14,8 @@ import { XMarkIcon, ChevronDownIcon, SunIcon } from "@heroicons/react/24/solid";
 
 export interface SelectProps {
   name: string;
-  placeholder?: string;
   options: OptionsType[];
+  placeholder?: string;
   register?: UseFormRegisterReturn<string>;
   dropDownHeight?: string;
   disabled?: boolean;

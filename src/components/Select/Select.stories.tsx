@@ -1,5 +1,5 @@
 import React from "react";
-import { StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import Select from "./Select";
@@ -20,109 +20,184 @@ function generateArray(value: number) {
 
 const defaultOptions = generateArray(5);
 
-const meta = {
+const meta: Meta<typeof Select> = {
+  title: "Components/Select",
   component: (args: any) => {
     const methods = useForm();
 
     return (
       <FormProvider {...methods}>
-        <form>
-          {args.title && args.description && (
-            <div className=" mb-3 flex flex-col gap-2">
-              <p className="text-xl text-semibold">{args.title}</p>
-              <p className="text-md">{args.description}</p>
-            </div>
-          )}
-
-          {args.description && <hr className="mb-4" />}
-
-          <p className="text-lg text-semibold mb-3">{args.label}</p>
+        <form className="h-60">
           <Select {...args} />
         </form>
       </FormProvider>
     );
   },
+  tags: ["autodocs"],
+  argTypes: {
+    name: {
+      type: {
+        required: true,
+      },
+      control: {
+        type: "text",
+      },
+      description: "Name of the field for register",
+      table: {
+        type: {
+          summary: "string",
+        },
+      },
+    },
+    options: {
+      type: {
+        required: true,
+      },
+      table: {
+        type: {
+          summary: "OptionsType[]",
+        },
+      },
+      description: "Options for the display in select",
+    },
+    placeholder: {
+      control: {
+        type: "text",
+      },
+      table: {
+        defaultValue: {
+          summary: "Select...",
+        },
+        type: {
+          summary: "string",
+        },
+      },
+      description: "A text placeholder to be shown in select",
+    },
+    dropDownHeight: {
+      table: {
+        type: {
+          summary: "string",
+        },
+      },
+      description: "Indicates the height of the dropdown",
+      control: {
+        type: "text",
+      },
+    },
+    disabled: {
+      table: {
+        type: {
+          summary: "boolean",
+        },
+      },
+      description: "If true, select will be disabled",
+      control: {
+        type: "boolean",
+      },
+    },
+    limit: {
+      table: {
+        type: {
+          summary: "number",
+        },
+      },
+      description: "Maximum allowable number of selected options",
+      control: {
+        type: "number",
+      },
+    },
+    isLoading: {
+      table: {
+        type: {
+          summary: "boolean",
+        },
+      },
+      description: "Disables interaction with the select and displays loading.",
+      control: {
+        type: "boolean",
+      },
+    },
+    isSearchable: {
+      table: {
+        type: {
+          summary: "boolean",
+        },
+      },
+      description: "Provides the ability to search within the list of options.",
+      control: {
+        type: "boolean",
+      },
+    },
+    onOptionClick: {
+      table: {
+        type: {
+          summary:
+            "(e:React.MouseEvent<HTMLLIElement, MouseEvent>, option: OptionsType) => void",
+        },
+      },
+      description:
+        "Triggered upon clicking on an option within the dropdown list.",
+    },
+    onSelectedOptionClick: {
+      table: {
+        type: {
+          summary:
+            "(e:React.MouseEvent<HTMLSpanElement, MouseEvent>, option: OptionsType) => void",
+        },
+      },
+      description:
+        "Triggered upon clicking on one of the already selected options.",
+    },
+    onRemoveOptionClick: {
+      table: {
+        type: {
+          summary:
+            "(e:React.MouseEvent<HTMLButtonElement, MouseEvent>, option: OptionsType) => void",
+        },
+      },
+      description:
+        "Triggered when removing one of the options from the selected ones.",
+    },
+    register: {
+      table: {
+        type: {
+          summary: "UseFormRegisterReturn<string>",
+        },
+      },
+      description: "Registers the select in React hook forms.",
+    },
+  },
+  parameters: {},
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+/** Default Select just to show how it works */
+export const Default: StoryObj<typeof Select> = {
   args: {
-    title: "Select",
-    description:
-      "Select components are used to select a single option from a list of options.",
-    label: "Default",
-
     name: "select",
-    placeholder: "Select...",
     options: defaultOptions,
-    dropDownHeight: "150px",
-    disabled: false,
-    limit: 3,
-    isSearchable: true,
+    placeholder: "Select...",
   },
 };
 
-const stories: Story[] = [
-  {
-    name: "With Dropdown Height",
-    args: {
-      name: "select",
-      placeholder: "Select...",
-      options: generateArray(7),
-      dropDownHeight: "200px",
-    },
-  },
-  {
-    name: "With Placeholder",
-    args: {
-      name: "select",
-      placeholder: "Custom placeholder",
-      options: defaultOptions,
-    },
-  },
-  {
-    name: "WithDisabled",
-    args: {
-      name: "select",
-      placeholder: "Select...",
-      options: defaultOptions,
-      disabled: true,
-    },
-  },
-  {
-    name: "With Limit",
-    args: {
-      name: "select",
-      placeholder: "Select...",
-      options: defaultOptions,
-      limit: 3,
-    },
-  },
-  {
-    name: "With Loading",
-    args: {
-      name: "select",
-      placeholder: "Select...",
-      options: defaultOptions,
-      isLoading: true,
-    },
-  },
-  {
-    name: "With Filter",
-    args: {
-      name: "select",
-      placeholder: "Select...",
-      options: defaultOptions,
-      isSearchable: true,
-    },
-  },
-];
+export const WithDisabled: StoryObj<typeof Select> = {
+  args: { ...Default.args, disabled: true },
+};
 
-export const WithDropdownHeight = stories[0];
-export const WithPlaceholder = stories[1];
-export const WithDisabled = stories[2];
-export const WithLimit = stories[3];
-export const WithLoading = stories[4];
-export const WithFilter = stories[5];
+export const WithDropdownHeight: StoryObj<typeof Select> = {
+  args: { ...Default.args, dropDownHeight: "200px" },
+};
+export const WithPlaceholder: StoryObj<typeof Select> = {
+  args: { ...Default.args, placeholder: "Custom placeholder" },
+};
+export const WithLimit: StoryObj<typeof Select> = {
+  args: { ...Default.args, limit: 3 },
+};
+export const WithLoading: StoryObj<typeof Select> = {
+  args: { ...Default.args, isLoading: true },
+};
+export const WithFilter: StoryObj<typeof Select> = {
+  args: { ...Default.args, isSearchable: true },
+};
