@@ -16,7 +16,6 @@ export interface SelectProps {
   name: string;
   placeholder: string;
   options: OptionsType[];
-  register?: UseFormRegisterReturn<string>;
   dropDownHeight?: string;
   disabled?: boolean;
   limit?: number;
@@ -44,7 +43,6 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       dropDownHeight,
       placeholder,
       options,
-      register,
       disabled,
       limit,
       onOptionClick,
