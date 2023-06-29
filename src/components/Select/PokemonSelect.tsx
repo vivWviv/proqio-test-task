@@ -54,6 +54,7 @@ const PokemonSelect = () => {
         )}
       </div>
       <Select
+        isSearchable
         placeholder="Select a pokemon"
         options={pokemonList}
         limit={4}
