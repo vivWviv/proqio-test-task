@@ -35,7 +35,7 @@ const PokemonForm: React.FC<FormProps> = ({ submitForm, closeModal }) => {
         <InputField label="Name" name="name" />
         <InputField label="Surname" name="surname" />
 
-        <PokemonSelect />
+        <PokemonSelect label="Pokemons" name="pokemon" limit={4} isSearchable />
 
         <div className="flex gap-2">
           <Button variant="secondary" size="lg" onClick={() => closeModal()}>
