@@ -19,7 +19,6 @@ export interface SelectProps {
   options: OptionsType[];
   dropDownHeight?: string;
   disabled?: boolean;
-  isError?: boolean;
   limit?: number;
   isLoading?: boolean;
 
@@ -46,7 +45,6 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       options,
       register,
       disabled,
-      isError,
       limit,
       onOptionClick,
       onSelectedOptionClick,
@@ -118,8 +116,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           name,
           currentSelectedOptionList.filter(
             (op: OptionsType) => op.label !== option.label
-          ),
-          { shouldValidate: true }
+          )
         );
       },
       [watch, setValue, name, onRemoveOptionClick]
@@ -157,7 +154,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </select>
           <div
             className={`w-full rounded-md px-3 py-2 border flex items-center justify-between ${
-              isError || errors[name] ? "show-error-outline" : "show-outline"
+              errors[name] ? "show-error-outline" : "show-outline"
             } ${
               disabled
                 ? "bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]"

@@ -54,6 +54,7 @@ const PokemonSelect = () => {
         )}
       </div>
       <Select
+        placeholder="Select a pokemon"
         options={pokemonList}
         {...register("pokemon", {
           validate: (value) =>
@@ -61,7 +62,6 @@ const PokemonSelect = () => {
         })}
         limit={4}
         isLoading={isLoading}
-        placeholder="Select a pokemon"
         onSelectedOptionClick={(e, { value }) =>
           setSelectedPokemonSprite(value)
         }
