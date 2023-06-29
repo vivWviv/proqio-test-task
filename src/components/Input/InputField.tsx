@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import React, { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
-import { InformationCircleIcon } from '@heroicons/react/24/solid';
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 
 interface InputFieldProps {
   label: string;
@@ -42,7 +42,7 @@ const InputField: React.FC<InputFieldProps> = ({
         type="text"
         placeholder={`Enter ${label}`}
         className={`w-full p-2 border rounded-md show-outline  ${
-          errors[name] ? 'show-error-outline' : 'border-gray-300'
+          errors[name] ? "show-error-outline" : "border-gray-300"
         }`}
         {...register(name, {
           required: true,
@@ -53,7 +53,7 @@ const InputField: React.FC<InputFieldProps> = ({
       />
       <p
         className={`${
-          errors[name] ? 'text-red-500' : 'text-gray-500'
+          errors[name] ? "text-red-500" : "text-gray-500"
         } text-sm mt-2`}
       >
         {errors[name]

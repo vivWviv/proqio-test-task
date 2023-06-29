@@ -11,7 +11,19 @@ import { OptionsType, PokemonType } from "../../types/types";
 import { POKEMON_API } from "../../api/api";
 import { createPokemonsOptions } from "../../helpers/pokemon";
 
-const PokemonSelect = () => {
+type PokemonSelectProps = {
+  name: string;
+  label: string;
+  limit?: number;
+  isSearchable?: boolean;
+};
+
+const PokemonSelect: React.FC<PokemonSelectProps> = ({
+  name,
+  label,
+  limit = 4,
+  isSearchable = false,
+}) => {
   const methods = useFormContext();
 
   const {
@@ -41,7 +53,7 @@ const PokemonSelect = () => {
   return (
     <>
       <div className="mb-2 flex items-center gap-1 relative">
-        Pokemon
+        {label}
         <InformationCircleIcon
           className="fill-gray-600 h-4 w-4 cursor-pointer"
           onMouseEnter={() => setIsToolTipVisible(true)}
@@ -49,19 +61,20 @@ const PokemonSelect = () => {
         />
         {isToolTipVisible && (
           <div className="absolute p-2 bg-gray-100 text-gray-600 rounded mt-1 text-xs max-w-xs whitespace-pre-wrap top-[-45px]">
-            You have to choose 4 pokemons
+            You have to choose {limit} pokemons
           </div>
         )}
       </div>
       <Select
-        isSearchable
+        isSearchable={isSearchable}
         placeholder="Select a pokemon"
         options={pokemonList}
-        limit={4}
+        limit={limit}
         isLoading={isLoading}
-        {...register("pokemon", {
+        {...register(name, {
           validate: (value) =>
-            value?.length === 4 || "There must be 4 Pokemon selected",
+            value?.length === limit ||
+            `There must be ${limit} Pokemon selected`,
         })}
         onSelectedOptionClick={(e, { value }) =>
           setSelectedPokemonSprite(value)
