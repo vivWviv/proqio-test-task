@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export const api = axios.create({
   baseURL: "https://pokeapi.co/api/v2",
@@ -18,7 +18,7 @@ export const POKEMON_API = {
       });
       return data.results;
     } catch (error: any) {
-      console.log(error.message);
+      console.error(error?.message || "Error!!!");
     }
   },
 };
