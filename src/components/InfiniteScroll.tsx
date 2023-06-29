@@ -8,6 +8,7 @@ interface InfiniteScroll {
   next?: () => void;
 }
 
+//TODO delete
 const InfiniteScroll = ({
   height,
   hasMore,

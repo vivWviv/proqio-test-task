@@ -96,8 +96,12 @@ const PokemonSelect = () => {
       </div>
       <Select
         options={pokemonList}
-        name="pokemon"
-        register={register("pokemon", {
+        // name="pokemon"
+        // register={register("pokemon", {
+        //   validate: (value) =>
+        //     value?.length === 4 || "There must be 4 Pokémon selected",
+        // })}
+        {...register("pokemon", {
           validate: (value) =>
             value?.length === 4 || "There must be 4 Pokémon selected",
         })}
@@ -106,17 +110,11 @@ const PokemonSelect = () => {
           setSelectedPokemonSprite(value)
         }
         maxSelected={4}
-        async={{
-          isLoading,
-          hasMore,
-          onLoadMore: handleNext,
-        }}
-        filter={{
-          filter,
-          filterList: POKEMON_TYPES_LIST,
-          onClearFilterList: fetchPokemonList,
-          onFilterSelect: handleOnFilterSelect,
-        }}
+        // async={{
+        //   isLoading,
+        //   hasMore,
+        //   onLoadMore: handleNext,
+        // }}
       />
       <p
         className={`${
