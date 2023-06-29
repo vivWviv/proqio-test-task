@@ -15,12 +15,13 @@ import { XMarkIcon, ChevronDownIcon, SunIcon } from "@heroicons/react/24/solid";
 export interface SelectProps {
   name: string;
   placeholder: string;
-  register?: UseFormRegisterReturn<string>;
   options: OptionsType[];
+  register?: UseFormRegisterReturn<string>;
   dropDownHeight?: string;
   disabled?: boolean;
   limit?: number;
   isLoading?: boolean;
+  isSearchable?: boolean;
 
   onOptionClick?: (
     e: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -50,6 +51,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       onSelectedOptionClick,
       onRemoveOptionClick,
       isLoading,
+      isSearchable,
     },
     ref
   ) => {
@@ -62,10 +64,17 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     } = methods;
 
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+    const [filterValue, setFilterValue] = useState("");
+    const [optionList, setOptionList] = useState<OptionsType[]>([]);
+    const [isShaking, setIsShaking] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const isMaxSelected = limit ? watch(name)?.length >= limit : false;
+
+    useEffect(() => {
+      setOptionList(options);
+    }, []);
 
     useEffect(() => {
       const handleDropdownOutsideClick = (event: MouseEvent) => {
@@ -105,6 +114,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
         option: OptionsType
       ) => {
+        e.stopPropagation();
+
         if (onRemoveOptionClick) {
           onRemoveOptionClick(e, option);
           return;
@@ -123,7 +134,13 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     );
 
     const handleInputClick = () => {
-      if (isMaxSelected) return;
+      if (isMaxSelected) {
+        setIsShaking(true);
+        setTimeout(() => {
+          setIsShaking(false);
+        }, 500);
+        return;
+      }
       setIsDropdownVisible((prev) => !prev);
     };
 
@@ -137,7 +154,20 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
       option: OptionsType
     ) => {
+      e.stopPropagation();
       if (onSelectedOptionClick) onSelectedOptionClick(e, option);
+    };
+
+    const handleFilterValueChange = (
+      e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      setFilterValue(e.target.value);
+
+      setOptionList(
+        options.filter((op) =>
+          op.label.toLowerCase().includes(e.target.value.toLowerCase())
+        )
+      );
     };
 
     return (
@@ -152,8 +182,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </select>
           <div
             className={`w-full rounded-md px-3 py-2 border flex items-center justify-between ${
-              errors[name] ? "show-error-outline" : "show-outline"
-            } ${
+              isShaking ? "shake" : ""
+            } ${errors[name] ? "show-error-outline" : "show-outline"} ${
               disabled
                 ? "bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]"
                 : "text-gray-400 bg-white border-gray-300"
@@ -216,9 +246,24 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
               ref={dropdownRef}
               className="mt-2 p-2 absolute z-10 bg-white w-full border border-gray-300 rounded-md shadow-lg"
             >
-              <div className="h-[200px] overflow-y-auto">
+              {isSearchable && (
+                <div className="mb-3 mt-1">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    className="w-full p-2 border rounded-md outline-none"
+                    value={filterValue}
+                    onChange={handleFilterValueChange}
+                  />
+                </div>
+              )}
+
+              <div
+                className="overflow-y-auto"
+                style={{ height: dropDownHeight ? dropDownHeight : "150px" }}
+              >
                 <ul>
-                  {options.map((option) => {
+                  {optionList.map((option) => {
                     if (
                       !watch(name)?.some(
                         (el: OptionsType) => el.label === option.label

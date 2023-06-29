@@ -3,29 +3,51 @@
 @tailwind utilities;
 
 @layer utilities {
-        .hide-scrollbar::-webkit-scrollbar {
-            width: 0;
-            height: 0;
-            background-color: transparent;
+    .hide-scrollbar::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        background-color: transparent;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar-thumb {
+        background-color: transparent;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    .show-outline:hover {
+        outline: 2px solid #6868fd;
+    }
+
+    .show-outline:focus {
+        outline: 2px solid #6868fd;
+    }
+
+    .show-error-outline {
+        outline: 2px solid #f66363;
+    }
+
+    .shake {
+        animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    @keyframes shake {
+        10%, 90% {
+            transform: translate3d(-1px, 0, 0);
         }
 
-        .hide-scrollbar::-webkit-scrollbar-thumb {
-            background-color: transparent;
+        20%, 80% {
+            transform: translate3d(2px, 0, 0);
         }
 
-        .hide-scrollbar::-webkit-scrollbar-track {
-            background-color: transparent;
+        30%, 50%, 70% {
+            transform: translate3d(-4px, 0, 0);
         }
 
-        .show-outline:hover {
-            outline: 2px solid #6868fd;
+        40%, 60% {
+            transform: translate3d(4px, 0, 0);
         }
-
-        .show-outline:focus {
-            outline: 2px solid #6868fd;
-        }
-
-        .show-error-outline {
-            outline: 2px solid #f66363;
-        }
+    }
 }

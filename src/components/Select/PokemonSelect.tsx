@@ -56,12 +56,12 @@ const PokemonSelect = () => {
       <Select
         placeholder="Select a pokemon"
         options={pokemonList}
+        limit={4}
+        isLoading={isLoading}
         {...register("pokemon", {
           validate: (value) =>
             value?.length === 4 || "There must be 4 Pokemon selected",
         })}
-        limit={4}
-        isLoading={isLoading}
         onSelectedOptionClick={(e, { value }) =>
           setSelectedPokemonSprite(value)
         }
