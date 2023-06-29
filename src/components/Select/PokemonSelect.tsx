@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 import Select from "./Select";
@@ -6,7 +6,7 @@ import { ImageModal } from "../Modal";
 
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
 
-import { POKEMON_LIMIT, POKEMON_TYPES_LIST } from "../../constants/constants";
+import { POKEMON_LIMIT } from "../../constants/constants";
 import { OptionsType, PokemonType } from "../../types/types";
 import { POKEMON_API } from "../../api/api";
 import { createPokemonsOptions } from "../../helpers/pokemon";
@@ -22,47 +22,21 @@ const PokemonSelect = () => {
   const [isToolTipVisible, setIsToolTipVisible] = useState(false);
   const [pokemonList, setPokemonList] = useState<OptionsType[]>([]);
   const [selectedPokemonSprite, setSelectedPokemonSprite] = useState("");
-  const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [filter, setFilter] = useState("");
-
-  useEffect(() => {
-    fetchPokemonList();
-  }, []);
 
   const fetchPokemonList = async () => {
     setIsLoading(true);
-    setFilter("");
 
     const res: PokemonType[] = await POKEMON_API.getPokemons(POKEMON_LIMIT);
     const optionsList = createPokemonsOptions(res);
 
-    setHasMore(optionsList.length === POKEMON_LIMIT);
     setPokemonList(optionsList);
     setIsLoading(false);
   };
 
-  const extractPokemonObjects = (data: Array<any>) => {
-    const result: Array<PokemonType> = [];
-
-    for (const item of data) {
-      if (item.hasOwnProperty("pokemon")) {
-        const pokemonObj: PokemonType = item.pokemon;
-        result.push(pokemonObj);
-      }
-    }
-
-    return result;
-  };
-
-  const handleOnFilterSelect = async (type: string) => {
-    const res = await POKEMON_API.getPokemonsByType(type);
-    const pokemons = extractPokemonObjects(res);
-    const optionsList = createPokemonsOptions(pokemons);
-    setFilter(type);
-
-    setPokemonList(optionsList);
-  };
+  useEffect(() => {
+    fetchPokemonList();
+  }, []);
 
   return (
     <>
