@@ -21,12 +21,4 @@ export const POKEMON_API = {
       console.log(error.message);
     }
   },
-  async getPokemonsByType(type: string) {
-    try {
-      const { data } = await api.get(`/type/${type}`);
-      return data.pokemon;
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  },
 };
