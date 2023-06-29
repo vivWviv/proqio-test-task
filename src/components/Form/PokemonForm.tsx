@@ -11,7 +11,7 @@ interface FormProps {
   closeModal: () => void;
 }
 
-const Form: React.FC<FormProps> = ({ submitForm, closeModal }) => {
+const PokemonForm: React.FC<FormProps> = ({ submitForm, closeModal }) => {
   const methods = useForm<FormData>();
   const { handleSubmit } = methods;
 
@@ -54,4 +54,4 @@ const Form: React.FC<FormProps> = ({ submitForm, closeModal }) => {
   );
 };
 
-export default Form;
+export default PokemonForm;
