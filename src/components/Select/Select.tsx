@@ -76,22 +76,23 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       setOptionList(options);
     }, [options]);
 
-    // useEffect(() => {
-    //   const handleDropdownOutsideClick = (event: MouseEvent) => {
-    //     if (
-    //       dropdownRef.current &&
-    //       !dropdownRef.current.contains(event.target as Node)
-    //     ) {
-    //       setIsDropdownVisible(false);
-    //     }
-    //   };
-    //
-    //   document.addEventListener("mousedown", handleDropdownOutsideClick);
-    //
-    //   return () => {
-    //     document.removeEventListener("mousedown", handleDropdownOutsideClick);
-    //   };
-    // }, []);
+    useEffect(() => {
+      const handleDropdownOutsideClick = (event: MouseEvent) => {
+        if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(event.target as Node) &&
+          isDropdownVisible
+        ) {
+          setIsDropdownVisible(false);
+        }
+      };
+
+      document.addEventListener("mousedown", handleDropdownOutsideClick);
+
+      return () => {
+        document.removeEventListener("mousedown", handleDropdownOutsideClick);
+      };
+    }, []);
 
     const handleOptionSelectClick = (
       e: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -182,8 +183,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </select>
           <div
             className={`w-full rounded-md px-3 py-2 border flex items-center justify-between ${
-              isShaking ? "shake" : ""
-            } ${errors[name] ? "show-error-outline" : "show-outline"} ${
+              isLoading ? "cursor-progress" : ""
+            } ${isShaking ? "shake" : ""} ${
+              errors[name] ? "show-error-outline" : "show-outline"
+            } ${
               disabled
                 ? "bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]"
                 : "text-gray-400 bg-white border-gray-300"
