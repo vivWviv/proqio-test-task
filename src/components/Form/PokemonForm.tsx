@@ -38,15 +38,10 @@ const PokemonForm: React.FC<FormProps> = ({ submitForm, closeModal }) => {
         <PokemonSelect />
 
         <div className="flex gap-2">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => closeModal()}
-          >
+          <Button variant="secondary" size="lg" onClick={() => closeModal()}>
             Cancel
           </Button>
-
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" size="lg">
             Save
           </Button>
         </div>

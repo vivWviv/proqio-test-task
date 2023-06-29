@@ -1,10 +1,31 @@
-import React from 'react';
+import React from "react";
+
+const getSize = (size?: string): string => {
+  switch (size) {
+    case "xs": {
+      return `text-xs h-5`;
+    }
+    case "sm": {
+      return `text-sm h-6`;
+    }
+    case "lg": {
+      return `h-10`;
+    }
+    case "xl": {
+      return `h-12`;
+    }
+    default: {
+      return `h-8`;
+    }
+  }
+};
 
 interface ButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
-  variant: 'primary' | 'secondary';
-  type: 'button' | 'submit';
+  variant: "primary" | "secondary";
+  type?: "button" | "submit";
+  size?: "xs" | "sm" | "base" | "lg" | "xl";
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -12,6 +33,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   variant,
   type,
+  size,
 }) => {
   const handleOnButtonClick = () => {
     if (onClick) {
@@ -25,10 +47,12 @@ const Button: React.FC<ButtonProps> = ({
       type={type}
       onClick={handleOnButtonClick}
       className={`${
-        variant === 'primary'
-          ? 'bg-blue-500 border-transparent text-white  hover:bg-blue-600 focus:outline-blue-600'
-          : 'bg-transparent border-transparent text-black hover:border-gray-300 focus:outline-gray-300'
-      }  py-2 px-4 border mx-auto rounded mt-3 transition-colors duration-300 w-16 flex items-center justify-center md:w-32 md:text-lg :`}
+        variant === "primary"
+          ? "bg-blue-500 text-white hover:bg-blue-600 focus:outline-blue-600"
+          : "bg-transparent text-black hover:border-gray-300 focus:outline-gray-300"
+      } ${getSize(
+        size
+      )} py-2 px-4 border-transparent border mx-auto rounded mt-3 transition-colors duration-300 w-16 flex items-center justify-center md:w-32 md:text-lg :`}
     >
       {children}
     </button>
