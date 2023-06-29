@@ -41,7 +41,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (
     {
       name,
-      dropDownHeight,
+      dropDownHeight = "150px",
       placeholder,
       options,
       register,
@@ -262,7 +262,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
               <div
                 className="overflow-y-auto"
-                style={{ height: dropDownHeight ? dropDownHeight : "150px" }}
+                style={{ height: dropDownHeight }}
               >
                 <ul>
                   {optionList.map((option) => {

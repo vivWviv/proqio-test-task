@@ -76,6 +76,9 @@ const meta: Meta<typeof Select> = {
     },
     dropDownHeight: {
       table: {
+        defaultValue: {
+          summary: "150px",
+        },
         type: {
           summary: "string",
         },
@@ -87,6 +90,9 @@ const meta: Meta<typeof Select> = {
     },
     disabled: {
       table: {
+        defaultValue: {
+          summary: false,
+        },
         type: {
           summary: "boolean",
         },
@@ -109,6 +115,9 @@ const meta: Meta<typeof Select> = {
     },
     isLoading: {
       table: {
+        defaultValue: {
+          summary: false,
+        },
         type: {
           summary: "boolean",
         },
@@ -120,6 +129,9 @@ const meta: Meta<typeof Select> = {
     },
     isSearchable: {
       table: {
+        defaultValue: {
+          summary: false,
+        },
         type: {
           summary: "boolean",
         },
@@ -158,14 +170,6 @@ const meta: Meta<typeof Select> = {
       },
       description:
         "Triggered when removing one of the options from the selected ones.",
-    },
-    register: {
-      table: {
-        type: {
-          summary: "UseFormRegisterReturn<string>",
-        },
-      },
-      description: "Registers the select in React hook forms.",
     },
   },
 };
