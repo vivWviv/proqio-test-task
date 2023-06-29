@@ -1,10 +1,11 @@
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { FormData } from "../../types/types";
-import InputField from "../InputField";
+import InputField from "../Input";
 import Button from "../Button";
 import { PokemonSelect } from "../Select";
+
+import { FormData } from "../../types/types";
 
 interface FormProps {
   submitForm: (data: FormData) => void;
