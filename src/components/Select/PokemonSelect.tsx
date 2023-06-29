@@ -103,7 +103,7 @@ const PokemonSelect = () => {
         })}
         placeholder="Select a pokemon"
         onSelectedOptionClick={(e, { value }) =>
-          setSelectedPokemonSprite(value as string)
+          setSelectedPokemonSprite(value)
         }
         maxSelected={4}
         async={{
