@@ -183,12 +183,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </select>
           <div
             className={`w-full rounded-md px-3 py-2 border flex items-center justify-between ${
-              isLoading ? "cursor-progress" : ""
+              isLoading ? "cursor-progress pointer-events-none" : ""
             } ${isShaking ? "shake" : ""} ${
               errors[name] ? "show-error-outline" : "show-outline"
             } ${
               disabled
-                ? "bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA]"
+                ? "bg-[#F0F2FE] pointer-events-none border-[#EBEDFD] text-[#CDD2FA] cursor-not-allowed"
                 : "text-gray-400 bg-white border-gray-300"
             }`}
             onClick={handleInputClick}
