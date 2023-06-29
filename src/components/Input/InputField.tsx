@@ -46,9 +46,18 @@ const InputField: React.FC<InputFieldProps> = ({
         }`}
         {...register(name, {
           required: true,
-          minLength: 2,
-          maxLength: 12,
-          pattern: /^[a-zA-Z]+$/,
+            minLength: {
+                value: 2,
+                message: "Please enter at least 2 characters.",
+            },
+            maxLength: {
+                value: 12,
+                message: "Please enter no more than 12 characters.",
+            },
+            pattern: {
+                value: /^[a-zA-Z]+$/,
+                message: "Please enter only alphabetical characters.",
+            },
         })}
       />
       <p
@@ -56,9 +65,7 @@ const InputField: React.FC<InputFieldProps> = ({
           errors[name] ? "text-red-500" : "text-gray-500"
         } text-sm mt-2`}
       >
-        {errors[name]
-          ? `${label} must be 2 - 12 characters long`
-          : `${label} is required`}
+        {errors[name]?.message!.toString() || `${label} is required`}
       </p>
     </div>
   );
