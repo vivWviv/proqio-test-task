@@ -9,7 +9,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { POKEMON_LIMIT, POKEMON_TYPES_LIST } from "../../constants/constants";
 import { OptionsType, PokemonType } from "../../types/types";
 import { POKEMON_API } from "../../api/api";
-import { pokemon } from "../../helpers/pokemon";
+import { createPokemonsOptions } from "../../helpers/pokemon";
 
 const PokemonSelect = () => {
   const methods = useFormContext();
@@ -35,27 +35,12 @@ const PokemonSelect = () => {
     setFilter("");
 
     const res: PokemonType[] = await POKEMON_API.getPokemons(POKEMON_LIMIT);
-    const optionsList = pokemon(res);
+    const optionsList = createPokemonsOptions(res);
 
     setHasMore(optionsList.length === POKEMON_LIMIT);
     setPokemonList(optionsList);
     setIsLoading(false);
   };
-
-  const handleNext = useCallback(async () => {
-    setIsLoading(true);
-
-    const offset = pokemonList.length;
-    const res: PokemonType[] = await POKEMON_API.getPokemons(
-      POKEMON_LIMIT,
-      offset
-    );
-    const optionsList = pokemon(res);
-
-    setHasMore(optionsList.length === POKEMON_LIMIT);
-    setPokemonList((prev) => [...prev, ...optionsList]);
-    setIsLoading(false);
-  }, [pokemonList.length]);
 
   const extractPokemonObjects = (data: Array<any>) => {
     const result: Array<PokemonType> = [];
@@ -73,7 +58,7 @@ const PokemonSelect = () => {
   const handleOnFilterSelect = async (type: string) => {
     const res = await POKEMON_API.getPokemonsByType(type);
     const pokemons = extractPokemonObjects(res);
-    const optionsList = pokemon(pokemons);
+    const optionsList = createPokemonsOptions(pokemons);
     setFilter(type);
 
     setPokemonList(optionsList);
@@ -96,25 +81,16 @@ const PokemonSelect = () => {
       </div>
       <Select
         options={pokemonList}
-        // name="pokemon"
-        // register={register("pokemon", {
-        //   validate: (value) =>
-        //     value?.length === 4 || "There must be 4 Pokémon selected",
-        // })}
         {...register("pokemon", {
           validate: (value) =>
             value?.length === 4 || "There must be 4 Pokemon selected",
         })}
         limit={4}
+        isLoading={isLoading}
         placeholder="Select a pokemon"
         onSelectedOptionClick={(e, { value }) =>
           setSelectedPokemonSprite(value)
         }
-        // async={{
-        //   isLoading,
-        //   hasMore,
-        //   onLoadMore: handleNext,
-        // }}
       />
       <p
         className={`${

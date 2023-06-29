@@ -13,7 +13,7 @@ import Filter from "./Filter";
 import { firstLetterCapitalize } from "../../helpers/string";
 import { OptionsType } from "../../types/types";
 
-import { XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon, ChevronDownIcon, SunIcon } from "@heroicons/react/24/solid";
 
 export interface SelectProps {
   name: string;
@@ -23,7 +23,8 @@ export interface SelectProps {
   dropDownHeight?: string;
   disabled?: boolean;
   isError?: boolean;
-  limit: number;
+  limit?: number;
+  isLoading?: boolean;
   //
   // async?: {
   //   isLoading: boolean;
@@ -60,6 +61,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       onOptionClick,
       onSelectedOptionClick,
       onRemoveOptionClick,
+      isLoading,
       // filter,
     },
     ref
@@ -76,7 +78,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const isMaxSelected = watch(name)?.length >= limit;
+    const isMaxSelected = limit ? watch(name)?.length >= limit : false;
 
     useEffect(() => {
       const handleDropdownOutsideClick = (event: MouseEvent) => {
@@ -213,6 +215,11 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                   />
                 )}
               </div>
+              {isLoading && (
+                <div className="animate-spin">
+                  <SunIcon className="h-4 w-4" />
+                </div>
+              )}
               <ChevronDownIcon
                 className="h-4 w-4 cursor-pointer"
                 stroke={disabled ? "#CDD2FA" : "black"}
