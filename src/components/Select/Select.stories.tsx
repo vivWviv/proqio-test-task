@@ -1,47 +1,43 @@
-import React, { useState } from "react";
+import React from "react";
 import { StoryObj } from "@storybook/react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import Select from "./Select";
-import { OptionsType } from "../../types/types";
+
+function generateArray(value: number) {
+  let array = [];
+
+  for (let i = 1; i <= value; i++) {
+    let option = {
+      label: "Option " + i,
+      value: "option" + i,
+    };
+    array.push(option);
+  }
+
+  return array;
+}
+
+const defaultOptions = generateArray(5);
 
 const meta = {
   component: (args: any) => {
     const methods = useForm();
 
-    const [filter, setFilter] = useState<string>(args.filter || "");
-    const [options, setOptions] = useState<OptionsType[]>(args.options || []);
-
-    const onClearFilterList = () => {
-      setFilter("");
-      setOptions(args.options);
-    };
-
-    const onFilterSelect = (value: string) => {
-      const filtredArray = Array.from(Array(4).keys()).map((el) => {
-        return { label: value + el, value: el };
-      });
-      setFilter(value);
-      setOptions(filtredArray);
-    };
-
     return (
       <FormProvider {...methods}>
-        <form className="mt-10">
-          {filter === "" || filter ? (
-            <Select
-              {...args}
-              options={options}
-              filter={{
-                filter: filter,
-                onClearFilterList,
-                onFilterSelect,
-                filterList: args.filterList,
-              }}
-            />
-          ) : (
-            <Select {...args} options={options} />
+        <form>
+          {args.title && args.description && (
+            <div className=" mb-3 flex flex-col gap-2">
+              <p className="text-xl text-semibold">{args.title}</p>
+              <p className="text-md">{args.description}</p>
+            </div>
           )}
+
+          {args.description && <hr className="mb-4" />}
+
+          <p className="text-lg text-semibold mb-3">{args.label}</p>
+          <Select {...args} />
         </form>
       </FormProvider>
     );
@@ -53,124 +49,80 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    name: "pokemon",
-    placeholder: "Choose a Pokemon",
-    options: [
-      { label: "Test", value: "test" },
-      { label: "Test2", value: "test2" },
-      { label: "Test3", value: "test3" },
-      { label: "Test4", value: "test4" },
-      { label: "Test5", value: "test5" },
-    ],
-    dropDownHeight: "200px",
+    title: "Select",
+    description:
+      "Select components are used to select a single option from a list of options.",
+    label: "Default",
+
+    name: "select",
+    placeholder: "Select...",
+    options: defaultOptions,
+    dropDownHeight: "150px",
     disabled: false,
-    maxSelected: 3,
-    isError: false,
-    filterList: ["Filter 1", "Filter 2", "Filter 3"],
-    filter: "",
+    limit: 3,
+    isSearchable: true,
   },
 };
 
-export const WithPlaceholder = {
-  args: {
-    name: "pokemon",
-    placeholder: "Custom placeholder",
-    options: [
-      { label: "Test", value: "test" },
-      { label: "Test2", value: "test2" },
-      { label: "Test3", value: "test3" },
-      { label: "Test4", value: "test4" },
-      { label: "Test5", value: "test5" },
-    ],
+const stories: Story[] = [
+  {
+    name: "With Dropdown Height",
+    args: {
+      name: "select",
+      placeholder: "Select...",
+      options: generateArray(7),
+      dropDownHeight: "200px",
+    },
   },
-};
+  {
+    name: "With Placeholder",
+    args: {
+      name: "select",
+      placeholder: "Custom placeholder",
+      options: defaultOptions,
+    },
+  },
+  {
+    name: "WithDisabled",
+    args: {
+      name: "select",
+      placeholder: "Select...",
+      options: defaultOptions,
+      disabled: true,
+    },
+  },
+  {
+    name: "With Limit",
+    args: {
+      name: "select",
+      placeholder: "Select...",
+      options: defaultOptions,
+      limit: 3,
+    },
+  },
+  {
+    name: "With Loading",
+    args: {
+      name: "select",
+      placeholder: "Select...",
+      options: defaultOptions,
+      isLoading: true,
+    },
+  },
+  {
+    name: "With Filter",
+    args: {
+      name: "select",
+      placeholder: "Select...",
+      options: defaultOptions,
+      isSearchable: true,
+    },
+  },
+];
 
-export const WithDropDownHeight = {
-  args: {
-    name: "pokemon",
-    placeholder: "Select a Pokemon",
-    dropDownHeight: "200px",
-    options: [
-      { label: "Test", value: "test" },
-      { label: "Test2", value: "test2" },
-      { label: "Test3", value: "test3" },
-      { label: "Test4", value: "test4" },
-      { label: "Test5", value: "test5" },
-    ],
-  },
-};
-
-export const WithDisabled = {
-  args: {
-    name: "pokemon",
-    placeholder: "Choose a Pokemon",
-    options: [
-      { label: "Test", value: "test" },
-      { label: "Test2", value: "test2" },
-      { label: "Test3", value: "test3" },
-      { label: "Test4", value: "test4" },
-      { label: "Test5", value: "test5" },
-    ],
-    disabled: true,
-  },
-};
-
-export const WithMaxSelected = {
-  args: {
-    name: "pokemon",
-    placeholder: "Choose a Pokemon",
-    options: [
-      { label: "Test", value: "test" },
-      { label: "Test2", value: "test2" },
-      { label: "Test3", value: "test3" },
-      { label: "Test4", value: "test4" },
-      { label: "Test5", value: "test5" },
-    ],
-    maxSelected: 2,
-  },
-};
-
-export const WithError = {
-  args: {
-    name: "pokemon",
-    placeholder: "Choose a Pokemon",
-    options: [
-      { label: "Test", value: "test" },
-      { label: "Test2", value: "test2" },
-      { label: "Test3", value: "test3" },
-      { label: "Test4", value: "test4" },
-      { label: "Test5", value: "test5" },
-    ],
-    isError: true,
-  },
-};
-
-export const WithCustomOptions: Story = {
-  args: {
-    name: "pokemon",
-    placeholder: "Choose a Pokemon",
-    options: [
-      { label: "Your option 1", value: "Your value 1" },
-      { label: "Your option 2", value: "Your value 2" },
-      { label: "Your option 3", value: "Your value 3" },
-      { label: "Your option 4", value: "Your value 4" },
-      { label: "Your option 5", value: "Your value 5" },
-    ],
-  },
-};
-
-export const WithFilter: Story = {
-  args: {
-    name: "pokemon",
-    placeholder: "Choose a Pokemon",
-    options: [
-      { label: "Test", value: "test" },
-      { label: "Test2", value: "test2" },
-      { label: "Test3", value: "test3" },
-      { label: "Test4", value: "test4" },
-      { label: "Test5", value: "test5" },
-    ],
-    filterList: ["Filter 1", "Filter 2", "Filter 3"],
-    filter: "Some Default Filter",
-  },
-};
+export const WithDropdownHeight = stories[0];
+export const WithPlaceholder = stories[1];
+export const WithDisabled = stories[2];
+export const WithLimit = stories[3];
+export const WithLoading = stories[4];
+export const WithFilter = stories[5];
