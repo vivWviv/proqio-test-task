@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 import Select from "./Select";
-import ImageModal from "./ImageModal";
-import { POKEMON_LIMIT, POKEMON_TYPES_LIST } from "../../constants/constants";
+import { ImageModal } from "../Modal";
 
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
+
+import { POKEMON_LIMIT, POKEMON_TYPES_LIST } from "../../constants/constants";
 import { OptionsType, PokemonType } from "../../types/types";
 import { POKEMON_API } from "../../api/api";
 import { pokemon } from "../../helpers/pokemon";

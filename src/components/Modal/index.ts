@@ -1,3 +1,3 @@
 import CreateTeamModal from "./CreateTeamModal";
-
-export { CreateTeamModal };
+import ImageModal from "./ImageModal";
+export { CreateTeamModal, ImageModal };
