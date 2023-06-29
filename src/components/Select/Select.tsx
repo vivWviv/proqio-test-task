@@ -5,7 +5,7 @@ import React, {
   useRef,
   forwardRef,
 } from "react";
-import { useFormContext } from "react-hook-form";
+import { RegisterOptions, useFormContext } from "react-hook-form";
 
 import { firstLetterCapitalize } from "../../helpers/string";
 import { OptionsType } from "../../types/types";
@@ -21,6 +21,7 @@ export interface SelectProps {
   limit?: number;
   isLoading?: boolean;
   isSearchable?: boolean;
+  registerOptions?: RegisterOptions;
 
   onOptionClick?: (
     e: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -42,6 +43,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       name,
       dropDownHeight = "150px",
       placeholder,
+      registerOptions = {},
       options,
       disabled,
       limit,
@@ -56,10 +58,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     const methods = useFormContext();
 
     const {
+      register,
       watch,
       formState: { errors },
       setValue,
     } = methods;
+    register(name, registerOptions);
 
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [filterValue, setFilterValue] = useState("");

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -113,6 +113,17 @@ const meta: Meta<typeof Select> = {
         type: "number",
       },
     },
+    registerOptions: {
+      table: {
+        type: {
+          summary: "RegisterOptions",
+        },
+      },
+      defaultValue: {
+        summary: "{}",
+      },
+      description: "Optional configuration for initial 'register'",
+    },
     isLoading: {
       table: {
         defaultValue: {
@@ -213,4 +224,45 @@ export const WithLoading: StoryObj<typeof Select> = {
 /** An example of how a filter works. */
 export const WithFilter: StoryObj<typeof Select> = {
   args: { ...Default.args, isSearchable: true },
+};
+export const Error: StoryObj<typeof Select> = {
+  render: () => {
+    const methods = useForm();
+    const {
+      handleSubmit,
+      formState: { errors },
+    } = methods;
+    const NAME = "example";
+    const LIMIT = 2;
+
+    useEffect(() => {
+      handleSubmit(() => {})();
+    }, []);
+
+    return (
+      <FormProvider {...methods}>
+        <form className="h-60">
+          <Select
+            name={NAME}
+            options={defaultOptions}
+            registerOptions={{
+              validate: (value) =>
+                value?.length === LIMIT ||
+                `There must be ${LIMIT} items selected`,
+            }}
+            limit={2}
+          />
+          <p
+            className={`${
+              errors?.[NAME] ? "text-red-500" : "text-gray-500"
+            } text-sm mt-2`}
+          >
+            {errors?.[NAME]
+              ? errors?.[NAME].message!.toString()
+              : "Pokemons is required"}
+          </p>
+        </form>
+      </FormProvider>
+    );
+  },
 };

@@ -66,16 +66,17 @@ const PokemonSelect: React.FC<PokemonSelectProps> = ({
         )}
       </div>
       <Select
+        name="pokemon"
+        registerOptions={{
+          validate: (value) =>
+            value?.length === limit ||
+            `There must be ${limit} Pokemon selected`,
+        }}
         isSearchable={isSearchable}
         placeholder="Select a pokemon"
         options={pokemonList}
         limit={limit}
         isLoading={isLoading}
-        {...register(name, {
-          validate: (value) =>
-            value?.length === limit ||
-            `There must be ${limit} Pokemon selected`,
-        })}
         onSelectedOptionClick={(e, { value }) =>
           setSelectedPokemonSprite(value)
         }
