@@ -128,7 +128,6 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     };
 
     const handleWheelScroll = (e: React.WheelEvent<HTMLDivElement>) => {
-      e.preventDefault();
       const container = e.currentTarget;
       const scrollAmount = e.deltaY;
       container.scrollLeft += scrollAmount;
