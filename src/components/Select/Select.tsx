@@ -183,7 +183,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </select>
           <div
             className={`w-full rounded-md px-3 py-2 border flex items-center justify-between ${
-              isLoading ? "cursor-progress pointer-events-none" : ""
+              isLoading ? "pointer-events-none" : ""
             } ${isShaking ? "shake" : ""} ${
               errors[name] ? "show-error-outline" : "show-outline"
             } ${
@@ -219,8 +219,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                   </div>
                 ))}
               </div>
+            ) : isLoading ? (
+              <span>Loading...</span>
             ) : (
-              placeholder
+              <span>{placeholder}</span>
             )}
             <div className="flex items-center gap-1.5 p-1">
               <div className="h-4 w-4">
