@@ -103,13 +103,13 @@ const PokemonSelect = () => {
         // })}
         {...register("pokemon", {
           validate: (value) =>
-            value?.length === 4 || "There must be 4 Pokémon selected",
+            value?.length === 4 || "There must be 4 Pokemon selected",
         })}
+        limit={4}
         placeholder="Select a pokemon"
         onSelectedOptionClick={(e, { value }) =>
           setSelectedPokemonSprite(value)
         }
-        maxSelected={4}
         // async={{
         //   isLoading,
         //   hasMore,

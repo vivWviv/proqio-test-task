@@ -20,10 +20,10 @@ export interface SelectProps {
   placeholder: string;
   register?: UseFormRegisterReturn<string>;
   options: OptionsType[];
-  maxSelected?: number;
   dropDownHeight?: string;
   disabled?: boolean;
   isError?: boolean;
+  limit: number;
   //
   // async?: {
   //   isLoading: boolean;
@@ -54,8 +54,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       options,
       register,
       disabled,
-      maxSelected,
       isError,
+      limit,
       // async,
       onOptionClick,
       onSelectedOptionClick,
@@ -76,14 +76,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    //TODO rewrite to variable
-    const isMaxSelected = () => {
-      if (maxSelected) {
-        return watch(name)?.length >= maxSelected;
-      } else {
-        return false;
-      }
-    };
+    const isMaxSelected = watch(name)?.length >= limit;
 
     useEffect(() => {
       const handleDropdownOutsideClick = (event: MouseEvent) => {
@@ -106,7 +99,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       e: React.MouseEvent<HTMLLIElement, MouseEvent>,
       option: OptionsType
     ) => {
-      if (isMaxSelected()) return;
+      if (isMaxSelected) return;
 
       if (onOptionClick) {
         onOptionClick(e, option);
@@ -142,7 +135,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     );
 
     const handleInputClick = () => {
-      if (isMaxSelected()) return;
+      if (isMaxSelected) return;
       setIsDropdownVisible((prev) => !prev);
     };
 
@@ -202,7 +195,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                       onClick={(e) => handleRemoveOption(e, option)}
                       className="mt-0.5"
                     >
-                      <XMarkIcon className="h-4 w-4 text-gray-500" />
+                      <XMarkIcon className="h-4 w-4 text-gray-500 cursor-pointer hover:text-black hover:scale-105" />
                     </button>
                   </div>
                 ))}
