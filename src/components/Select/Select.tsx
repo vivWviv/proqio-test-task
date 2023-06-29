@@ -7,9 +7,6 @@ import React, {
 } from "react";
 import { useFormContext, UseFormRegisterReturn } from "react-hook-form";
 
-import InfiniteScroll from "../InfiniteScroll";
-import Filter from "./Filter";
-
 import { firstLetterCapitalize } from "../../helpers/string";
 import { OptionsType } from "../../types/types";
 
@@ -25,12 +22,6 @@ export interface SelectProps {
   isError?: boolean;
   limit?: number;
   isLoading?: boolean;
-  //
-  // async?: {
-  //   isLoading: boolean;
-  //   onLoadMore: () => void;
-  //   hasMore: boolean;
-  // };
 
   onOptionClick?: (
     e: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -57,12 +48,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       disabled,
       isError,
       limit,
-      // async,
       onOptionClick,
       onSelectedOptionClick,
       onRemoveOptionClick,
       isLoading,
-      // filter,
     },
     ref
   ) => {
