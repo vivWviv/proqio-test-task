@@ -138,7 +138,6 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       option: OptionsType
     ) => {
       if (onSelectedOptionClick) onSelectedOptionClick(e, option);
-      return;
     };
 
     return (
