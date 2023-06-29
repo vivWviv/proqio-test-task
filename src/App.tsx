@@ -20,12 +20,12 @@ function App() {
         <div className="w-full flex flex-col items-center space-y-4 sm:w-1/2 lg:w-1/3 rounded-lg bg-blue-100 p-4 shadow-md max-h-[470px]">
           <div className="text-2xl font-bold">{`The ${firstLetterCapitalize(
             submitData.name
-          )} ${firstLetterCapitalize(submitData.surname)} team`}</div>
+          )}'s team`}</div>
           <div className="flex space-x-2">
             {submitData.pokemon.map((el) => (
               <div key={el.label} className="flex flex-col items-center">
                 <img
-                  src={el.value as string}
+                  src={el.value}
                   alt={`${firstLetterCapitalize(el.label)} Sprite`}
                   className="w-16 h-16 rounded-md"
                 />

@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useFormContext, UseFormRegisterReturn } from "react-hook-form";
 
 import InfiniteScroll from "../InfiniteScroll";
+import Filter from "./Filter";
 
 import { firstLetterCapitalize } from "../../helpers/string";
 import { OptionsType } from "../../types/types";
-import Filter from "./Filter";
 
 import { XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 
@@ -73,6 +73,7 @@ const Select: React.FC<SelectProps> = ({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  //TODO rewrite to variable
   const isMaxSelected = () => {
     if (maxSelected) {
       return watch(name)?.length >= maxSelected;

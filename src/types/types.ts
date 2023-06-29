@@ -5,7 +5,7 @@ export interface PokemonType {
 
 export interface OptionsType {
   label: string;
-  value?: string | number | readonly string[];
+  value: string;
 }
 
 export interface FormData {
