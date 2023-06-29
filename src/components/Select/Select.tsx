@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useFormContext, UseFormRegisterReturn } from "react-hook-form";
 
-import InfiniteScroll from "./InfiniteScroll";
+import InfiniteScroll from "../InfiniteScroll";
 
 import { firstLetterCapitalize } from "../../helpers/string";
 import { OptionsType } from "../../types/types";
