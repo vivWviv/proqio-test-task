@@ -168,13 +168,12 @@ const meta: Meta<typeof Select> = {
       description: "Registers the select in React hook forms.",
     },
   },
-  parameters: {},
 };
 
 export default meta;
 
 /** Default Select just to show how it works */
-export const Default: StoryObj<typeof Select> = {
+export const Default: StoryObj<typeof meta> = {
   args: {
     name: "select",
     options: defaultOptions,
@@ -182,22 +181,32 @@ export const Default: StoryObj<typeof Select> = {
   },
 };
 
+/** An example of a disabled select. */
 export const WithDisabled: StoryObj<typeof Select> = {
   args: { ...Default.args, disabled: true },
 };
 
+/** An example of using a custom dropdown height. */
 export const WithDropdownHeight: StoryObj<typeof Select> = {
   args: { ...Default.args, dropDownHeight: "200px" },
 };
+
+/** An example of using a custom placeholder. */
 export const WithPlaceholder: StoryObj<typeof Select> = {
   args: { ...Default.args, placeholder: "Custom placeholder" },
 };
+
+/** An example of using a limit for a select. */
 export const WithLimit: StoryObj<typeof Select> = {
   args: { ...Default.args, limit: 3 },
 };
+
+/** An example of how the isLoading property works. */
 export const WithLoading: StoryObj<typeof Select> = {
   args: { ...Default.args, isLoading: true },
 };
+
+/** An example of how a filter works. */
 export const WithFilter: StoryObj<typeof Select> = {
   args: { ...Default.args, isSearchable: true },
 };

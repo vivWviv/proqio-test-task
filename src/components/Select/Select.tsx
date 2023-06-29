@@ -102,8 +102,6 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
       if (onOptionClick) {
         onOptionClick(e, option);
-        setIsDropdownVisible(false);
-        return;
       }
 
       setValue(name, [...(watch(name) || []), option]);
@@ -119,7 +117,6 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
         if (onRemoveOptionClick) {
           onRemoveOptionClick(e, option);
-          return;
         }
 
         const currentSelectedOptionList = watch(name) || [];
