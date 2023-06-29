@@ -8,7 +8,7 @@ import { POKEMON_LIMIT, POKEMON_TYPES_LIST } from "../../constants/constants";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import { OptionsType, PokemonType } from "../../types/types";
 import { POKEMON_API } from "../../api/api";
-import { pokemonToOptionObj } from "../../helpers/pokemonToOptionObj";
+import { pokemon } from "../../helpers/pokemon";
 
 const PokemonSelect = () => {
   const methods = useFormContext();
@@ -34,7 +34,7 @@ const PokemonSelect = () => {
     setFilter("");
 
     const res: PokemonType[] = await POKEMON_API.getPokemons(POKEMON_LIMIT);
-    const optionsList = pokemonToOptionObj(res);
+    const optionsList = pokemon(res);
 
     setHasMore(optionsList.length === POKEMON_LIMIT);
     setPokemonList(optionsList);
@@ -49,7 +49,7 @@ const PokemonSelect = () => {
       POKEMON_LIMIT,
       offset
     );
-    const optionsList = pokemonToOptionObj(res);
+    const optionsList = pokemon(res);
 
     setHasMore(optionsList.length === POKEMON_LIMIT);
     setPokemonList((prev) => [...prev, ...optionsList]);
@@ -72,7 +72,7 @@ const PokemonSelect = () => {
   const handleOnFilterSelect = async (type: string) => {
     const res = await POKEMON_API.getPokemonsByType(type);
     const pokemons = extractPokemonObjects(res);
-    const optionsList = pokemonToOptionObj(pokemons);
+    const optionsList = pokemon(pokemons);
     setFilter(type);
 
     setPokemonList(optionsList);
