@@ -1,9 +1,9 @@
-import React from 'react';
-import Form from './Form';
+import React from "react";
+import Form from "./Form/Form";
 
-import { FormData } from '../types/types';
+import { FormData } from "../types/types";
 
-import { XMarkIcon } from '@heroicons/react/24/solid';
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 interface FormContainerProps {
   handleSubmit: (data: FormData) => void;

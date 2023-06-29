@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
-import Select from "./Select/Select";
-import ImageModal from "./Select/ImageModal";
-import { POKEMON_LIMIT, POKEMON_TYPES_LIST } from "../constants/constants";
+import Select from "./Select";
+import ImageModal from "./ImageModal";
+import { POKEMON_LIMIT, POKEMON_TYPES_LIST } from "../../constants/constants";
 
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
-import { OptionsType, PokemonType } from "../types/types";
-import { POKEMON_API } from "../api/api";
-import { pokemonToOptionObj } from "../helpers/pokemonToOptionObj";
+import { OptionsType, PokemonType } from "../../types/types";
+import { POKEMON_API } from "../../api/api";
+import { pokemonToOptionObj } from "../../helpers/pokemonToOptionObj";
 
 const PokemonSelect = () => {
   const methods = useFormContext();

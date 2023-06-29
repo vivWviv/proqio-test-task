@@ -34,7 +34,7 @@ function App() {
           </div>
         </div>
       ) : openCreateTeamModal ? (
-        <div className="w-full ">
+        <div className="w-full">
           <FormContainer
             handleSubmit={handleSubmit}
             closeModal={() => setOpenCreateTeamModal(false)}
